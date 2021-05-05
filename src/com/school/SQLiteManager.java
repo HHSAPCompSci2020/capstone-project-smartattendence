@@ -6,6 +6,10 @@ import java.sql.Statement;
 
 import org.sqlite.SQLiteDataSource;
 
+/**
+ * @author Arya Khokhar
+ * @version 1
+ */
 public class SQLiteManager {
 	private SQLiteDataSource ds;
 	private Connection conn;

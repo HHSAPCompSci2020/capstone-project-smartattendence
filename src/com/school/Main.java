@@ -44,6 +44,11 @@ import javax.swing.SwingConstants;
 
 import org.opencv.core.Core;
 
+/**
+ * @author Arya Khokhar
+ * @version 1
+ *
+ */
 public class Main
 {
 	final static int GRID_WIDTH = 4;

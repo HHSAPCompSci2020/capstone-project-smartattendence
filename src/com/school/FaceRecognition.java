@@ -19,6 +19,12 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import com.apple.laf.AquaButtonLabeledUI.LabeledButtonBorder;
 
+
+/** 
+ * This class is responsible for recognizing faces.
+ * @author Arya Khokhar
+ * @version 2
+ */
 public class FaceRecognition {
 	
 	String trainingDataFile;
