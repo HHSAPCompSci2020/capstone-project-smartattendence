@@ -72,7 +72,7 @@ public class Main
 		sqlManager.initTables();
 		
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
+		
 		Mat frame = new Mat();
 	    VideoCapture camera = new VideoCapture(0);
 	    
@@ -179,7 +179,7 @@ public class Main
         jframe.setVisible(true);
 	    jframe.pack();
 
-	    try {
+	   try {
 	    while (true) {
 	        if (camera.read(frame)) {
 
