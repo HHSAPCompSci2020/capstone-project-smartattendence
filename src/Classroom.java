@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * This class represents the classroom and contians an arraylist 
  * of students.
- * @author Arya Khokhar
+ * @author Arya Khokhar, xinyu zhao
  *
  */
 public class Classroom {
