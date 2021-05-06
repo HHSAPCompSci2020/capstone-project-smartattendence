@@ -14,6 +14,8 @@ A GUI will also be available to show the attendance saved by the program, and ca
 
 Instructions:
 
+Before running, make sure that eclipse is alowed access to the device's camera and reconfigure the buildpath of the project based on your os (Mac or Windows)
+
 The teacher will start the application(by clicking run on eclipse) with the camera facing the students, or have a zoom meeting or anything that shows student faces is fine. As students walk past the camera, or a picture of the student is shown, the application will record their names into the attendance system. Later, the teacher can use the application to: 1) to see data of a student by day, 2) See overall attendance of class by school day. How this menu will be created is by clicking on the menu button on the screen, and a list of dates and classes will be displayed. Click on the date and classes, and a menu in the application to see the current students and absent students will be made. The system can also flag the student that has been absent for more than a specified number of days: their names will be highlighted. To stop the application, close the window using the “x” mark on the top right corner of the windows. 
 
 Features List (THE ONLY SECTION THAT CANNOT CHANGE LATER):
