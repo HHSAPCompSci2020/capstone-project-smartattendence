@@ -1,9 +1,13 @@
+import java.util.ArrayList;
 
 /**
- * @author xinyu zhao
- * this is the School class, where it will contain Classroom
+ * @author Xinyu Zhao
+ * This is the School class, where it will contain Classroom
  */
 public class School {
+	
+	ArrayList<Classroom> s;
+	
 	public School() {
 		
 	}
