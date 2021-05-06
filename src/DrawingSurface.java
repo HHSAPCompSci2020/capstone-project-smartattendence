@@ -7,5 +7,6 @@
 public class DrawingSurface {
 	
 	School s;
+	public void draw() {}
 
 }
