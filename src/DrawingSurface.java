@@ -7,6 +7,10 @@
 public class DrawingSurface {
 	
 	School s;
+	
+	/**
+	 * This method displays on the window the GUI components
+	 */
 	public void draw() {}
 
 }

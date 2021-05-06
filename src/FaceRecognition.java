@@ -43,6 +43,9 @@ public class FaceRecognition {
 		this.nameMapDataFile = nameMapDataFile;
 	}
 	
+	/**
+	 * This method trains the model on the data.
+	 */
 	public void train() {
 		ArrayList<Mat> images=new ArrayList<>();
 		ArrayList<Integer> labels=new ArrayList<>();
@@ -65,6 +68,12 @@ public class FaceRecognition {
 		readNameMapData();
 	}
 	
+	/**
+	 * This method predicts which Student in the database matches 
+	 * most closely with the current photo.
+	 * @param mat
+	 * @return The name of the student
+	 */
 	public String predict(Mat mat) {
 		int[] outLabel=new int[1];
 		double[] outConf=new double[1];

@@ -45,6 +45,7 @@ import javax.swing.SwingConstants;
 import org.opencv.core.Core;
 
 /**
+ * This class is the main class and creates the window.
  * @author Arya Khokhar
  * @version 1
  *
@@ -207,6 +208,12 @@ public class Main
 	    	};*/
 	}
 	
+	/**
+	 * This method detects any faces within the camera.
+	 * @param frame
+	 * @param isSnapped
+	 * @throws IOException
+	 */
 	public static void detectFace(Mat frame, boolean isSnapped) throws IOException
 	{
 		MatOfRect faces = new MatOfRect();
@@ -280,7 +287,6 @@ public class Main
 			
 	}
 
-	
     public static BufferedImage Mat2BufferedImage(Mat m){
 
      int type = BufferedImage.TYPE_BYTE_GRAY;

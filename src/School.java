@@ -11,15 +11,20 @@ public class School {
 
 	}
 
-	// adds a Classroom
+	/**
+	 * This method adds a classroom to the school
+	 * @param classroom
+	 * @post Changes arraylist field
+	 */
 	public void add(Classroom classroom) {
-		s.add(classroom);
 
 	}
 
-	// removes a Classroom
-	public void remove(Classroom classroom) {
-		s.remove(classroom);
+	/**
+	 * This method removes a classroom from the school
+	 * @param classroom
+	 * @post Changes arraylist field
+	 */	public void remove(Classroom classroom) {
 	}
 
 }

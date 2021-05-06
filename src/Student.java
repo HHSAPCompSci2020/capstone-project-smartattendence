@@ -1,6 +1,7 @@
+import java.awt.Image;
+
 /**
  * This class represent a Student.
- * 
  * @author Xinyu Zhao
  *
  */
@@ -20,20 +21,35 @@ public class Student {
 		STUDENT_NAME = name;
 	}
 
+	/**
+	 * This method returns the ID of the student
+	 * @return int ID
+	 */
 	public int getID() {
 		return STUDENT_ID;
 	}
 
+	/**
+	 * This method return the name of the student
+	 * @return String name
+	 */
 	public String getName() {
 		return STUDENT_NAME;
 	}
 
+	/**
+	 * This method returns the attendence of the student on a given day
+	 * @return true is student was present and false is they were absent
+	 */
 	public boolean getAttendance(){
 		return attendance;
 	}
 
-	public void addPhoto(){
-		//adds photo
+	/**
+	 * This method adds a photo to go with the student
+	 * @param takes in an image
+	 */
+	public void addPhoto(Image i){
 	}
 
 }

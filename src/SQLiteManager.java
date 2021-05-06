@@ -7,6 +7,7 @@ import java.sql.Statement;
 import org.sqlite.SQLiteDataSource;
 
 /**
+ * This class represents the database.
  * @author Arya Khokhar
  * @version 1
  */
