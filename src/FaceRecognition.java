@@ -17,7 +17,7 @@ import org.opencv.face.FisherFaceRecognizer;
 import org.opencv.face.LBPHFaceRecognizer;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import com.apple.laf.AquaButtonLabeledUI.LabeledButtonBorder;
+//import com.apple.laf.AquaButtonLabeledUI.LabeledButtonBorder;
 
 
 /** 
