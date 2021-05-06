@@ -76,10 +76,10 @@ public class Main
 		sqlManager = new SQLiteManager();
 		sqlManager.initTables();
 		
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		//System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
-		Mat frame = new Mat();
-	    VideoCapture camera = new VideoCapture(0);
+		//Mat frame = new Mat();
+	    //VideoCapture camera = new VideoCapture(0);
 	    
 	    JFrame jframe = new JFrame("Title");
 	    jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -124,7 +124,7 @@ public class Main
 					}
 				}
 				try {
-					createTrainingList();
+					//createTrainingList();
 				} catch (Exception err) {
 					err.printStackTrace();
 				}
@@ -148,8 +148,8 @@ public class Main
 		        recognizeButton.setEnabled(false);
 		        snapButton.setEnabled(false);
 		        saveButton.setEnabled(false);
-		        faceRecognition = new FaceRecognition(trainingDataFile, nameMapDataFile);
-		        faceRecognition.train();
+		        faceRecognition = null;//new FaceRecognition(trainingDataFile, nameMapDataFile);
+		        //faceRecognition.train();
 		        recognitionMode = true;
 			}
 		});
@@ -183,9 +183,9 @@ public class Main
          
         jframe.setVisible(true);
 	    jframe.pack();
-
+/*
 	   try {
-	    while (true) {
+	    while (camera != null) {
 	        if (camera.read(frame)) {
 
 	        	if (snapped) {
@@ -204,7 +204,7 @@ public class Main
 	    }
 	    } catch(Exception e) {
 	    	e.printStackTrace();
-	    	};
+	    	};*/
 	}
 	
 	public static void detectFace(Mat frame, boolean isSnapped) throws IOException

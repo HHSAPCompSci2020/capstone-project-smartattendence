@@ -18,7 +18,7 @@ public class SQLiteManager {
 	SQLiteManager() {
 		try {
 			ds = new SQLiteDataSource();
-			ds.setUrl("jdbc:sqlite:" + basePath + "/resources/sqlite.db");
+			ds.setUrl("jdbc:sqlite:" + basePath + "/sqlite.db");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
