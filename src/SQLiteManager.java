@@ -1,4 +1,4 @@
-package com.school;
+
 
 import java.sql.Connection;
 import java.sql.SQLException;

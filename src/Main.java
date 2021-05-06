@@ -1,4 +1,4 @@
-package com.school;
+
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
