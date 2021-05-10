@@ -38,9 +38,8 @@ public class PhotoShoot extends WebCam {
 	
 	PhotoShoot(String dataDir) {
 		super(dataDir);
-		this.dataDir = dataDir;
 
-		setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         vidpanel = new JLabel();
 	    vidpanel.setPreferredSize(new Dimension(600, 300));
 	    
@@ -49,8 +48,8 @@ public class PhotoShoot extends WebCam {
         JPanel iconPanel = new JPanel();
         iconPanel.setLayout(new GridLayout(GRID_WIDTH, GRID_HEIGHT));
         snapButton.addActionListener(new ActionListener() {
-
-        	public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				for(int i = 1; i < GRID_SIZE; ++i) {
 					jlabels[i].setIcon(null);
 					textLabels[i].setText("");
@@ -60,9 +59,10 @@ public class PhotoShoot extends WebCam {
 				saveButton.setEnabled(true);
 			}
 		});
+        
         saveButton.addActionListener(new ActionListener() {
-
-        	public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				for(int i = 1; i < GRID_SIZE; ++i) {
 					if (faceImages[i] != null && textLabels[i] != null) {
 						String imageName = textLabels[i].getText();
@@ -88,7 +88,7 @@ public class PhotoShoot extends WebCam {
         cmdPanel.setLayout(new GridLayout(4, 1));
         cmdPanel.add(snapButton);
         cmdPanel.add(saveButton);
-        
+
     	iconPanel.add(cmdPanel);
     	
         for(int i = 1; i < GRID_SIZE; ++i) {
@@ -105,7 +105,7 @@ public class PhotoShoot extends WebCam {
         
         add(iconPanel, BorderLayout.LINE_END);
 	}
-	
+
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 		
 		if (index == -1 && startFaceDetect == false) {
@@ -141,7 +141,8 @@ public class PhotoShoot extends WebCam {
 		startFaceDetect = false;
 		snapped = false;
 		super.stopCapture();
-	}
+	}	
+
 	
 	/**
 	 * This method detects any faces within the camera.
