@@ -1,51 +1,21 @@
 
-import org.bytedeco.opencv.opencv_core.Mat;
-import org.bytedeco.opencv.opencv_core.Rect;
-import org.bytedeco.opencv.opencv_core.RectVector;
-import org.bytedeco.opencv.opencv_core.Scalar;
-import org.bytedeco.opencv.opencv_core.Size;
-import org.bytedeco.opencv.global.opencv_imgcodecs;
-import org.bytedeco.opencv.global.opencv_imgproc;
-import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
-import org.bytedeco.opencv.opencv_videoio.VideoCapture;
-import static org.bytedeco.opencv.global.opencv_objdetect.*;
-import static org.bytedeco.opencv.global.opencv_imgproc.*;
-
-
-import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
  * This class is the main class and creates the window.
- * @author Arya Khokhar and Xinyu Zhao
+ * @author Arya Khokhar
  * @version 2
  */
 public class Main
@@ -53,7 +23,9 @@ public class Main
 	static SQLiteManager sqlManager;
 	static String dataDir;
 	
-	static JPanel photoPane, attendencePane, classroomPane, studentPane;
+	static PhotoShoot photoPane;
+	static Attendence attendencePane;
+	static JPanel classroomPane, studentPane;
 	
 	static int attendencePaneIndex, photoPaneIndex, classroomPaneIndex, studentPaneIndex;
 	
@@ -75,7 +47,7 @@ public class Main
         int startIndex = 0;
         
         attendencePaneIndex = startIndex++;
-        attendencePane = new JPanel(false);
+        attendencePane = new Attendence(dataDir);
         attendencePane.setLayout(new GridLayout(1, 1));
         tabbedPane.addTab(" Attendence ", null, attendencePane,
                 "Take attendence");
@@ -101,9 +73,14 @@ public class Main
             public void stateChanged(ChangeEvent e) {
             	System.out.println("Selected tab = " + tabbedPane.getSelectedIndex());
                 if(tabbedPane.getSelectedIndex() == photoPaneIndex) {
-                	((PhotoShoot)photoPane).startCapture();
+                	attendencePane.stopCapture();
+                	photoPane.startCapture();
+                } if (tabbedPane.getSelectedIndex() == attendencePaneIndex) {
+                	photoPane.stopCapture();
+                	attendencePane.startCapture("classroom1");
                 } else {
-                	((PhotoShoot)photoPane).stopCapture();
+                	attendencePane.stopCapture();
+                	photoPane.stopCapture();
                 }
             }
         });
