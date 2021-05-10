@@ -7,23 +7,13 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Rect;
@@ -31,16 +21,11 @@ import org.bytedeco.opencv.opencv_core.RectVector;
 import org.bytedeco.opencv.opencv_core.Scalar;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
-import org.bytedeco.opencv.opencv_videoio.VideoCapture;
 
-public class PhotoShoot extends JPanel {
+public class PhotoShoot extends WebCam {
 	final static int GRID_WIDTH = 4;
 	final static int GRID_HEIGHT = 4;
 	final static int GRID_SIZE = GRID_WIDTH*GRID_HEIGHT;
-
-	public String classifierPath;
-	public String trainingDataFile;
-	public String nameMapDataFile;
 
 	static JLabel[] jlabels = new JLabel[GRID_SIZE];
 	static JTextField[] textLabels = new JTextField[GRID_SIZE];
@@ -48,28 +33,14 @@ public class PhotoShoot extends JPanel {
 	static boolean snapped = false;
 	static JButton snapButton = new JButton("Snap");
 	static JButton saveButton = new JButton("Save");
-	static JButton detectButton = new JButton("Detection");
-	static JButton recognizeButton = new JButton("Recognition");
-	static boolean recognitionMode;
-	static FaceRecognition faceRecognition;
-    String dataDir;
     boolean capturing = false;
-    JLabel vidpanel;
+    boolean startFaceDetect = false;
 	
 	PhotoShoot(String dataDir) {
-		super(false);
+		super(dataDir);
 		this.dataDir = dataDir;
 
-		classifierPath = Paths.get(dataDir, "classifiers", "haarcascade_frontalface_alt.xml").toString();
-		nameMapDataFile = Paths.get(dataDir, "faces", "namemap.txt").toString();
-		trainingDataFile = Paths.get(dataDir, "faces", "training.txt").toString();
-		
-		System.out.println("datadir=" + dataDir);
-		System.out.println("classifierPath1=" + classifierPath);
-		System.out.println("nameMapDataFile=" + nameMapDataFile);
-		System.out.println("trainingDataFile=" + trainingDataFile);
-		
-        setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
         vidpanel = new JLabel();
 	    vidpanel.setPreferredSize(new Dimension(600, 300));
 	    
@@ -78,8 +49,8 @@ public class PhotoShoot extends JPanel {
         JPanel iconPanel = new JPanel();
         iconPanel.setLayout(new GridLayout(GRID_WIDTH, GRID_HEIGHT));
         snapButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+
+        	public void actionPerformed(ActionEvent e) {
 				for(int i = 1; i < GRID_SIZE; ++i) {
 					jlabels[i].setIcon(null);
 					textLabels[i].setText("");
@@ -90,8 +61,8 @@ public class PhotoShoot extends JPanel {
 			}
 		});
         saveButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+
+        	public void actionPerformed(ActionEvent e) {
 				for(int i = 1; i < GRID_SIZE; ++i) {
 					if (faceImages[i] != null && textLabels[i] != null) {
 						String imageName = textLabels[i].getText();
@@ -108,48 +79,16 @@ public class PhotoShoot extends JPanel {
 						}
 					}
 				}
-				try {
-					createTrainingList();
-				} catch (Exception err) {
-					err.printStackTrace();
-				}
 			}
 		});
         
-        detectButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-		        detectButton.setEnabled(false);
-		        recognizeButton.setEnabled(true);
-		        snapButton.setEnabled(true);
-		        recognitionMode = false;
-			}
-		});
-        
-        recognizeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-		        detectButton.setEnabled(true);
-		        recognizeButton.setEnabled(false);
-		        snapButton.setEnabled(false);
-		        saveButton.setEnabled(false);
-		        faceRecognition = new FaceRecognition(trainingDataFile, nameMapDataFile);
-		        faceRecognition.train();
-		        recognitionMode = true;
-			}
-		});
-        
-        recognitionMode = false;
-        detectButton.setEnabled(false);
         saveButton.setEnabled(false);
         
         JPanel cmdPanel = new JPanel();
         cmdPanel.setLayout(new GridLayout(4, 1));
         cmdPanel.add(snapButton);
         cmdPanel.add(saveButton);
-        cmdPanel.add(detectButton);
-        cmdPanel.add(recognizeButton);
-
+        
     	iconPanel.add(cmdPanel);
     	
         for(int i = 1; i < GRID_SIZE; ++i) {
@@ -167,50 +106,41 @@ public class PhotoShoot extends JPanel {
         add(iconPanel, BorderLayout.LINE_END);
 	}
 	
-	public void startCapture() {
+	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 		
-		Runnable cameraTask = new Runnable() {
-			@Override
-			public void run() {
-				Mat frame = new Mat();
-				VideoCapture camera = new VideoCapture(0);
-				System.out.println("Starting video capture");
-
-				capturing = true;
-				while (capturing) {
-					if (camera.read(frame)) {
-						try {
-							if (snapped) {
-								detectFace(frame, true);
-								snapped = false;
-							} else {
-								detectFace(frame, false);
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-						Image scaledImage = Mat2BufferedImage(frame).getScaledInstance(vidpanel.getWidth(), -1,
-								Image.SCALE_FAST);
-
-						vidpanel.setIcon(new ImageIcon(scaledImage));
-
-					}
-				}
-				
-				camera.close();
-				capturing = false;
-				System.out.println("Stopped video capture");
-			}
-		};
+		if (index == -1 && startFaceDetect == false) {
+			startFaceDetect = true;
+			return;
+		}
 		
-		new Thread(cameraTask).start();
+		if (index == -2) {
+			startFaceDetect = false;
+			snapped = false;
+			return;
+		}
+		
+		Mat resized = getResizedImage(grayFrame, rect);
+
+		if (snapped) {
+			System.out.println("taking picture " + index);
+			Image scaledImage = Mat2BufferedImage(resized).getScaledInstance(jlabels[index+1].getWidth(),
+				-1, Image.SCALE_FAST);
+			jlabels[index+1].setIcon(new ImageIcon(scaledImage));
+			faceImages[index+1] = resized;
+		}
 
 	}
 	
+	public void startCapture() {
+		startFaceDetect = false;
+		snapped = false;
+		super.startCapture();
+	}
+	
 	public void stopCapture() {
-		System.out.println("Stopping video capture");
-		capturing = false;
+		startFaceDetect = false;
+		snapped = false;
+		super.stopCapture();
 	}
 	
 	/**
@@ -241,7 +171,7 @@ public class PhotoShoot extends JPanel {
 		Rect[] facesArray = faces.get();
 		for (int i = 0; i < facesArray.length; i++) {
 			opencv_imgproc.rectangle(frame, facesArray[i], new Scalar(0, 255, 0, 255), 3, 1, 0);
-			if (!isSnapped && !recognitionMode) {
+			if (!isSnapped) {
 				continue;
 			}
 			Rect rect = facesArray[i];
@@ -275,10 +205,7 @@ public class PhotoShoot extends JPanel {
 				Size sz = new Size(92,112);
 				Mat resized = new Mat();
 				opencv_imgproc.resize(cropped, resized, sz);
-				if (recognitionMode && faceRecognition != null) {
-					String faceName = faceRecognition.predict(resized);
-					//System.out.println("Found: " + faceName);
-				} else if (snapped){
+				if (snapped){
 					Image scaledImage = Mat2BufferedImage(resized).getScaledInstance(jlabels[i+1].getWidth(),
 	            		-1, Image.SCALE_FAST);
 					jlabels[i+1].setIcon(new ImageIcon(scaledImage));
@@ -292,87 +219,4 @@ public class PhotoShoot extends JPanel {
 		}
 		faceCascade.close();
 	}
-
-	
-    public BufferedImage Mat2BufferedImage(Mat m){
-
-     int type = BufferedImage.TYPE_BYTE_GRAY;
-     if ( m.channels() > 1 ) {
-         type = BufferedImage.TYPE_3BYTE_BGR;
-     }
-     int bufferSize = m.channels()*m.cols()*m.rows();
-     byte [] b = new byte[bufferSize];
-     m.data().get(b);
-     BufferedImage image = new BufferedImage(m.cols(),m.rows(), type);
-     final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-     System.arraycopy(b, 0, targetPixels, 0, b.length);  
-     return image;
-    }
-	
-	private void saveImageFile(String imageName, Mat mat) {
-		File faceDataDir = new File(dataDir + File.separator + "faces");
-		if (!faceDataDir.exists()){
-			faceDataDir.mkdir();
-		}
-		
-		File nameDir = new File(faceDataDir, imageName);
-		if (!nameDir.exists()) {
-			nameDir.mkdir();
-		}
-		
-		int seq = 1;
-		File imgFile = null;
-		while (seq < 100) {
-			imgFile = new File(nameDir, "" + seq + ".pgm");
-			if (imgFile.exists()) {
-				seq++;
-				continue;
-			}
-			break;
-		}
-		if (imgFile != null) {
-			opencv_imgcodecs.imwrite(imgFile.getAbsolutePath(), mat);
-		}
-		
-	}
-	
-	private void createTrainingList() throws Exception {
-		List<String> faceNames = new ArrayList<String>();
-		List<List<String>> faceFiles = new ArrayList<List<String>>();
-		File faceDataDir = new File(dataDir + File.separator + "faces");
-	    for (File faceDir : faceDataDir.listFiles()) {
-	        if (!faceDir.isDirectory()) {
-	        	continue;
-	        }
-    		faceNames.add(faceDir.getName());
-    		List<String> imgFiles = new ArrayList<String>();
-		    for (File imgFile : faceDir.listFiles()) {
-		    	if (imgFile.getAbsolutePath().endsWith(".pgm")) {
-		    		imgFiles.add(imgFile.getAbsolutePath());
-		    	}
-		    }
-		    faceFiles.add(imgFiles);
-	    }
-	    
-		File nameMapFile = new File(nameMapDataFile);
-	    BufferedWriter nameMapWriter = new BufferedWriter(new FileWriter(nameMapFile));
-
-	    File trainingFile = new File(trainingDataFile);
-	    BufferedWriter imgPathWriter = new BufferedWriter(new FileWriter(trainingFile));
-
-	    for(int i = 0; i < faceNames.size(); i++) {
-	    	String faceName = faceNames.get(i);
-	    	nameMapWriter.append(faceName + ";" + (i+1) + "\n");
-	    	List<String> imgFiles = faceFiles.get(i);
-	    	for(int f = 0; f < imgFiles.size(); f++) {
-	    		String resourceDir = dataDir;
-	    		imgPathWriter.append(imgFiles.get(f).substring(resourceDir.length()) + ";" + (i+1) + "\n");
-	    	}
-	    }
-	    nameMapWriter.close();
-	    imgPathWriter.close();
-
-	}
-
-
 }
