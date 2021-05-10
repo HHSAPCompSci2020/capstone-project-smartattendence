@@ -21,7 +21,6 @@ public class School {
 	 * @post Changes arraylist field
 	 */
 	public void add(Classroom classroom) {
-
 		s.add(classroom);
 
 	}
@@ -33,7 +32,6 @@ public class School {
 	 * @post Changes arraylist field
 	 */
 	public void remove(Classroom classroom) {
-
 		s.remove(classroom);
 	}
 
