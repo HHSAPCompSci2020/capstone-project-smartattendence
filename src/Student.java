@@ -50,6 +50,7 @@ public class Student {
 	 * @param takes in an image
 	 */
 	public void addPhoto(Image i){
+		
 	}
 
 }

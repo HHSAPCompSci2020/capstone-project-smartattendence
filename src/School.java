@@ -11,14 +11,22 @@ public class School {
 	 * @pre cannot have two classes with the same name
 	 */
 	public School() {
+		s = new ArrayList<Classroom>();
+	}
 
+	/**
+	 * @pre cannot have two classes with the same name
+	 * @param ArrayList<classroom> input, a input list of classes.
+	 */
+	public School(ArrayList<Classroom> input) {
+		s = input;
 	}
 
 	/**
 	 * This method adds a classroom to the school
 	 * 
-	 * @param classroom
-	 * @post Changes arraylist field
+	 * @param Classroom classroom, the classroom you want to add
+	 * @post Changes ArrayList field
 	 */
 	public void add(Classroom classroom) {
 		s.add(classroom);
@@ -28,8 +36,8 @@ public class School {
 	/**
 	 * This method removes a classroom from the school
 	 * 
-	 * @param classroom
-	 * @post Changes arraylist field
+	 * @param Classroom classroom, the classroom you want to remove
+	 * @post Changes ArrayList field
 	 */
 	public void remove(Classroom classroom) {
 		s.remove(classroom);
