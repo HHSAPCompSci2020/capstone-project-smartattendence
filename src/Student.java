@@ -9,6 +9,7 @@ public class Student {
 
 	private final int STUDENT_ID;
 	private final String STUDENT_NAME;
+	private Image photo;
 	private boolean attendance = false;
 	
 	
@@ -16,11 +17,13 @@ public class Student {
 	public Student() {
 		STUDENT_ID = 0;
 		STUDENT_NAME = "";
+		photo = null;
 	}
 
-	public Student(int id, String name) {
+	public Student(int id, String name, Image i) {
 		STUDENT_ID = id;
 		STUDENT_NAME = name;
+		photo = i;
 	}
 
 	/**
@@ -52,6 +55,7 @@ public class Student {
 	 * @param takes in an image
 	 */
 	public void addPhoto(Image i){
+		photo = i;
 		
 	}
 
