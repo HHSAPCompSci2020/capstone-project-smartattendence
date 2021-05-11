@@ -10,6 +10,8 @@ public class Student {
 	private final int STUDENT_ID;
 	private final String STUDENT_NAME;
 	private boolean attendance = false;
+	
+	
 
 	public Student() {
 		STUDENT_ID = 0;
@@ -38,7 +40,7 @@ public class Student {
 	}
 
 	/**
-	 * This method returns the attendence of the student on a given day
+	 * This method returns the attendance of the student on a given day
 	 * @return true is student was present and false is they were absent
 	 */
 	public boolean getAttendance(){
