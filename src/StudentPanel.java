@@ -281,7 +281,6 @@ public class StudentPanel extends JPanel {
 			nameText.setEnabled(false);
 
 			gradeText.setText(student.getGrade() + "");
-			cityText.setText(student.getCity());
 		}
 
 		final JComponent[] inputs = new JComponent[] { new JLabel("ID"), idText, new JLabel("Name"), nameText,

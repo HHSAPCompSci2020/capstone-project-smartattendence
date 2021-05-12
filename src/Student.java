@@ -17,10 +17,9 @@ public class Student {
 		STUDENT_NAME = "";
 	}
 
-	public Student(int id, String name,String g) {
+	public Student(int id, String name) {
 		STUDENT_ID = id;
 		STUDENT_NAME = name;
-		grade = g;
 	}
 
 	/**
