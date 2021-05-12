@@ -294,12 +294,10 @@ public class StudentPanel extends JPanel {
 				int id = Integer.parseInt(idText.getText().trim());
 				String name = nameText.getText().trim();
 				String grade = gradeText.getText().trim();
-				String city = cityText.getText().trim();
 				if (student == null) {
 					student = new Student(id, name);
 				} else {
 					student.setGrade(grade);
-					student.setCity(city);
 				}
 
 				return student;
