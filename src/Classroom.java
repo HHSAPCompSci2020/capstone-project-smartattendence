@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Classroom {
 
-	ArrayList<Student> classroom;
+	ArrayList<StudentPanel> classroom;
 
 	/**
 	 * @pre cannot have two students with the same name!!
@@ -21,7 +21,7 @@ public class Classroom {
 	/**
 	 * @pre cannot have two students with the same name!!
 	 */
-	public Classroom(ArrayList<Student> c) {
+	public Classroom(ArrayList<StudentPanel> c) {
 		classroom = c;
 	}
 
@@ -31,7 +31,7 @@ public class Classroom {
 	 * @param s Takes in a Student object
 	 * @post ArrayList classroom has a new student
 	 */
-	public void addStudent(Student s) {
+	public void addStudent(StudentPanel s) {
 		classroom.add(s);
 	}
 
@@ -41,7 +41,7 @@ public class Classroom {
 	 * @param s Takes in a Student object
 	 * @post ArrayList classroom has one less student
 	 */
-	public void removeStudent(Student s) {
+	public void removeStudent(StudentPanel s) {
 		classroom.remove(s);
 
 	}

@@ -59,13 +59,11 @@ public class Main
         
         classroomPaneIndex = startIndex++;
         classroomPane = new JPanel(false);
-        classroomPane.setLayout(new GridLayout(1, 1));
         tabbedPane.addTab(" Classroom ", null, classroomPane,
                 "Manage classrooms");
         
         studentPaneIndex = startIndex++;
-        studentPane = new JPanel(false);
-        studentPane.setLayout(new GridLayout(1, 1));
+        studentPane = new StudentPanel(dataDir, sqlManager);
         tabbedPane.addTab(" Student ", null, studentPane,
                 "Manage students");
 

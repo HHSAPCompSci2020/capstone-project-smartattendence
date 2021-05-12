@@ -3,13 +3,14 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.sqlite.SQLiteDataSource;
 
 /**
  * This class represents the database.
  * @author Arya Khokhar
- * @version 2
+ * @version 3
  */
 public class SQLiteManager {
 	private SQLiteDataSource ds;
@@ -64,5 +65,21 @@ public class SQLiteManager {
 			e.printStackTrace();
 		}
 		
+	}
+	public void addStudent(Student student) {		
+	}
+
+	public List<Student> getAllStudents() {
+		return null;
+	}
+
+	public void updateStudent(Student student) {
+	}
+
+	public Student getStudent(String studentName) {
+		return null;
+	}
+
+	public void deleteStudent(String studentName) {		
 	}
 }
