@@ -25,9 +25,9 @@ public class Main
 	
 	static PhotoShoot photoPane;
 	static Attendence attendencePane;
-	static JPanel classroomPane, studentPane;
+	static JPanel recordsPane, studentPane;
 	
-	static int attendencePaneIndex, photoPaneIndex, classroomPaneIndex, studentPaneIndex;
+	static int attendencePaneIndex, photoPaneIndex, recordsPaneIndex, studentPaneIndex;
 	
 	public static void main(String[] args) {
 		createDataDirectory();
@@ -57,10 +57,10 @@ public class Main
         tabbedPane.addTab(" PhotoShoot ", null, photoPane,
                 "Take student pictures");
         
-        classroomPaneIndex = startIndex++;
-        classroomPane = new JPanel(false);
-        tabbedPane.addTab(" Classroom ", null, classroomPane,
-                "Manage classrooms");
+        recordsPaneIndex = startIndex++;
+        recordsPane = new RecordsPanel(dataDir, sqlManager);
+        tabbedPane.addTab(" Records ", null, recordsPane,
+                "View attendence records");
         
         studentPaneIndex = startIndex++;
         studentPane = new StudentPanel(dataDir, sqlManager);
@@ -87,7 +87,7 @@ public class Main
  	    jframe.pack();
 
         tabbedPane.setSelectedIndex(-1);
-        tabbedPane.setSelectedIndex(photoPaneIndex);
+        tabbedPane.setSelectedIndex(studentPaneIndex);
 	}
 	
 	static String createDataDirectory() {

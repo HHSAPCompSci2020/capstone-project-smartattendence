@@ -82,4 +82,27 @@ public class SQLiteManager {
 
 	public void deleteStudent(String studentName) {		
 	}
+
+	public List<Classroom> getAllClassrooms() {
+		return null;
+	}
+
+	public void addClassroom(Classroom classroom) {
+	}
+
+	public List<Student> getStudentsInClassroom(Classroom classroom) {
+		return null;
+	}
+
+	public void deleteClassroom(String classroomName) {
+	}
+
+	public Classroom getClassroom(String classroomName) {
+		return null;
+	}
+
+	public void updateClassroom(Classroom newClassroom) {
+		// TODO Auto-generated method stub
+		
+	}
 }

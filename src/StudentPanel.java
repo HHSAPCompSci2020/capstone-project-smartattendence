@@ -20,56 +20,210 @@ import javax.swing.ListSelectionModel;
 
 public class StudentPanel extends JPanel {
 	List<Student> allStudents;
-	DefaultListModel<String> listModel;
+	DefaultListModel<String> studentListModel;
 	JList<String> studentList;
+	
 	private SQLiteManager sqlManager;
 	private String dataDir;
 
+	List<Student> classStudents;
+	DefaultListModel<String> classStudentListModel;
+	JList<String> classStudentList;
+
+	List<Classroom> allClassrooms;
+	DefaultListModel<String> classroomListModel;
+	JList<String> classroomList;
+
 	GridBagConstraints constraints = new GridBagConstraints();
 
-	static JButton addButton = new JButton("Add Student");
-	static JButton editButton = new JButton("Edit Student");
-	static JButton deleteButton = new JButton("Delete Student");
+	static JButton addStudentButton = new JButton("Add Student");
+	static JButton editStudentButton = new JButton("Edit Student");
+	static JButton deleteStudentButton = new JButton("Delete Student");
+
+	static JButton addStudentToClassroom = new JButton("<--Add--");
+	static JButton removeStudentFromClassroom = new JButton("--Remove-->");
+
+	static JButton addClassroomButton = new JButton("Add Classroom");
+	static JButton editClassroomButton = new JButton("Edit Classroom");
+	static JButton deleteClassroomButton = new JButton("Delete Classroom");
 
 	public StudentPanel(String dataDir, SQLiteManager sqlManager) {
 		this.dataDir = dataDir;
 		this.sqlManager = sqlManager;
 		
+		setLayout(new GridBagLayout());
+
+		addClassrooms();
+		addClassStudents();
+		addStudents();
+	}
+	
+	void addClassrooms() {
+		allClassrooms = sqlManager.getAllClassrooms();
+
+		JPanel cmdPanel = new JPanel();
+		cmdPanel.setLayout(new GridLayout(3, 1));
+		cmdPanel.add(addClassroomButton);
+		cmdPanel.add(editClassroomButton);
+		cmdPanel.add(deleteClassroomButton);
+
+		classroomListModel = new DefaultListModel<String>();
+		if (allClassrooms != null) {
+			for(Classroom classroom : allClassrooms) {
+				classroomListModel.addElement(classroom.getName());
+			}
+		}
+		classroomList = new JList<String>(classroomListModel);
+		
+		addClassroomButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Classroom classroom = getClassroomInfo(null);
+				if (classroom != null) {
+					sqlManager.addClassroom(classroom);
+					classroomListModel.addElement(classroom.getName());
+				}
+			}
+		});
+
+		editClassroomButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int i = classroomList.getSelectedIndex();
+				if (i < 0 ) {
+					return;
+				}
+				String classroomName = classroomListModel.get(i);
+				Classroom classroom = sqlManager.getClassroom(classroomName);
+				Classroom newClassroom = getClassroomInfo(classroom);
+				if (newClassroom != null) {
+					sqlManager.updateClassroom(newClassroom);
+				}
+			}
+		});
+
+		deleteClassroomButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int i = classroomList.getSelectedIndex();
+				if (i < 0 ) {
+					return;
+				}
+				String classroomName = classroomListModel.get(i);
+				classroomListModel.remove(i);
+				sqlManager.deleteClassroom(classroomName);
+			}
+		});
+
+		classroomList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		classroomList.setLayoutOrientation(JList.VERTICAL);
+		classroomList.setVisibleRowCount(-1);
+		JScrollPane listScroller = new JScrollPane(classroomList);
+		listScroller.setPreferredSize(new Dimension(200, 200));
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		add(cmdPanel, gbc);
+
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.weighty = 1.0;
+		gbc.weightx = 1;
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		add(listScroller, gbc);
+	}
+	
+	void addClassStudents() {
+		classStudents = sqlManager.getStudentsInClassroom(null);
+
+		JPanel cmdPanel = new JPanel();
+		cmdPanel.setLayout(new GridLayout(2, 1));
+		cmdPanel.add(addStudentToClassroom);
+		cmdPanel.add(removeStudentFromClassroom);
+
+		classStudentListModel = new DefaultListModel<String>();
+		if (classStudents != null) {
+			for(Student student : classStudents) {
+				classStudentListModel.addElement(student.getName());
+			}
+		}
+		classStudentList = new JList<String>(classStudentListModel);
+		
+		addStudentToClassroom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+
+		removeStudentFromClassroom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+
+		classStudentList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		classStudentList.setLayoutOrientation(JList.VERTICAL);
+		classStudentList.setVisibleRowCount(-1);
+		JScrollPane listScroller = new JScrollPane(classStudentList);
+		listScroller.setPreferredSize(new Dimension(200, 200));
+
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.weighty = 1.0;
+		gbc.weightx = 1;
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		add(listScroller, gbc);
+
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 0;
+		gbc.gridx = 3;
+		gbc.gridy = 0;
+
+		add(cmdPanel, gbc);
+	}
+
+	void addStudents() {
+		
 		allStudents = sqlManager.getAllStudents();
 
 		JPanel cmdPanel = new JPanel();
 		cmdPanel.setLayout(new GridLayout(3, 1));
-		cmdPanel.add(addButton);
-		cmdPanel.add(editButton);
-		cmdPanel.add(deleteButton);
+		cmdPanel.add(addStudentButton);
+		cmdPanel.add(editStudentButton);
+		cmdPanel.add(deleteStudentButton);
 
-		listModel = new DefaultListModel<String>();
+		studentListModel = new DefaultListModel<String>();
 		if (allStudents != null) {
 			for(Student student : allStudents) {
-				listModel.addElement(student.getName());
+				studentListModel.addElement(student.getName());
 			}
 		}
-		studentList = new JList<String>(listModel);
+		studentList = new JList<String>(studentListModel);
 		
-		addButton.addActionListener(new ActionListener() {
+		addStudentButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Student student = getStudentInfo(null);
 				if (student != null) {
 					sqlManager.addStudent(student);
-					listModel.addElement(student.getName());
+					studentListModel.addElement(student.getName());
 				}
 			}
 		});
 
-		editButton.addActionListener(new ActionListener() {
+		editStudentButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = studentList.getSelectedIndex();
 				if (i < 0 ) {
 					return;
 				}
-				String studentName = listModel.get(i);
+				String studentName = studentListModel.get(i);
 				Student student = sqlManager.getStudent(studentName);
 				Student newStudent = getStudentInfo(student);
 				if (newStudent != null) {
@@ -78,15 +232,15 @@ public class StudentPanel extends JPanel {
 			}
 		});
 
-		deleteButton.addActionListener(new ActionListener() {
+		deleteStudentButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = studentList.getSelectedIndex();
 				if (i < 0 ) {
 					return;
 				}
-				String studentName = listModel.get(i);
-				listModel.remove(i);
+				String studentName = studentListModel.get(i);
+				studentListModel.remove(i);
 				sqlManager.deleteStudent(studentName);
 			}
 		});
@@ -97,24 +251,22 @@ public class StudentPanel extends JPanel {
 		JScrollPane listScroller = new JScrollPane(studentList);
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
-		setLayout(new GridBagLayout());
-
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.weighty = 1.0;
-		gbc.weightx = 0;
-		gbc.gridx = 0;
+		gbc.weightx = 1;
+		gbc.gridx = 4;
 		gbc.gridy = 0;
 		add(listScroller, gbc);
 
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
-		gbc.gridx = 1;
+		gbc.gridx = 5;
 		gbc.gridy = 0;
 
 		add(cmdPanel, gbc);
 	}
-
+	
 	private Student getStudentInfo(Student student) {
 		JTextField idText = new JTextField();
 		JTextField nameText = new JTextField();
@@ -160,4 +312,45 @@ public class StudentPanel extends JPanel {
 		return null;
 
 	}
+	
+	private Classroom getClassroomInfo(Classroom classroom) {
+		JTextField nameText = new JTextField();
+		JTextField periodText = new JTextField();
+		JTextField teacherText = new JTextField();
+
+		if (classroom != null) {
+			nameText.setText(classroom.getName());
+
+			periodText.setText(classroom.getPeriod() + "");
+			teacherText.setText(classroom.getTeacher());
+		}
+
+		final JComponent[] inputs = new JComponent[] { new JLabel("Name"), nameText,
+				new JLabel("Period"), periodText, new JLabel("Teacher"), teacherText };
+
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Classroom Info",
+				  JOptionPane.OK_CANCEL_OPTION);
+
+		if (result == JOptionPane.OK_OPTION) {
+			try {
+				String name = nameText.getText().trim();
+				int period = Integer.parseInt(periodText.getText().trim());
+				String teacher = teacherText.getText().trim();
+				if (classroom == null) {
+					classroom = new Classroom(name);
+				} else {
+					classroom.setPeriod(period);
+					classroom.setTeacher(teacher);
+				}
+
+				return classroom;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+
+	}
+
 }
