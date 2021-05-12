@@ -69,7 +69,10 @@ public class Attendence extends WebCam {
 	
 	int count = 1;
 
-	
+	/**
+	 * Attendence creates buttons and pannel for the Attandance page.
+	 * @param String dataDir: original Data
+	 */
 	public Attendence(String dataDir) {
 
 		super(dataDir);
@@ -77,6 +80,7 @@ public class Attendence extends WebCam {
 		nameMapDataFile = Paths.get(dataDir, "faces", "namemap.txt").toString();
 		trainingDataFile = Paths.get(dataDir, "faces", "training.txt").toString();
 		
+		// testing statements
 		System.out.println("nameMapDataFile=" + nameMapDataFile);
 		System.out.println("trainingDataFile=" + trainingDataFile);
 		
@@ -142,6 +146,11 @@ public class Attendence extends WebCam {
         add(rightPanel, BorderLayout.LINE_END);
 	}
 	
+	/**
+	 * @param int index:
+	 * @param Mat grayFrame:
+	 * @param Rect rect: 
+	 */
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 
 		if (index < 0 || !takingAttendence) {
@@ -154,7 +163,10 @@ public class Attendence extends WebCam {
 			listModel.addElement(faceName);
 		}
 	}
-	
+	/**
+	 * this method starts the video capture.
+	 * @param String classRoom: the classroom that you start the capture in
+	 */
 	public void startCapture(String classRoom) {
 		super.stopCapture();
 		this.classRoom = classRoom;
@@ -166,7 +178,9 @@ public class Attendence extends WebCam {
 		}
 		super.startCapture();
 	}
-	
+	/**
+	 * this method stops the video capture. no parameters are needed.
+	 */
 	public void stopCapture() {
 		takingAttendence = false;
 		super.stopCapture();
