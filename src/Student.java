@@ -10,15 +10,17 @@ public class Student {
 	private final int STUDENT_ID;
 	private final String STUDENT_NAME;
 	private boolean attendance = false;
+	private String grade;
 
 	public Student() {
 		STUDENT_ID = 0;
 		STUDENT_NAME = "";
 	}
 
-	public Student(int id, String name) {
+	public Student(int id, String name,String g) {
 		STUDENT_ID = id;
 		STUDENT_NAME = name;
+		grade = g;
 	}
 
 	/**
@@ -45,27 +47,15 @@ public class Student {
 		return attendance;
 	}
 
-	/**
-	 * This method adds a photo to go with the student
-	 * @param takes in an image
-	 */
-	public void addPhoto(Image i){
-	}
 
 	public String getGrade() {
-		return null;
+		return grade;
 	}
 
-	public String getCity() {
-		return null;
-	}
 
 	public void setGrade(String grade) {
-		
+		grade = this.getGrade();
 	}
 
-	public void setCity(String city) {
-		
-	}
 
 }
