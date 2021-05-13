@@ -2,7 +2,7 @@
 
 Automated Attendance System Using Facial Recognition
 Authors: Arya Khokhar, Xinyu Zhao
-Revision: 5/6/2021
+Revision: 5/13/2021
 
 Introduction: 
 
@@ -14,7 +14,9 @@ A GUI will also be available to show the attendance saved by the program, and ca
 
 Instructions:
 
-The teacher will start the application(by clicking run on eclipse) with the camera facing the students, or have a zoom meeting or anything that shows student faces is fine. As students walk past the camera, or a picture of the student is shown, the application will record their names into the attendance system. Later, the teacher can use the application to: 1) to see data of a student by day, 2) See overall attendance of class by school day. How this menu will be created is by clicking on the menu button on the screen, and a list of dates and classes will be displayed. Click on the date and classes, and a menu in the application to see the current students and absent students will be made. The system can also flag the student that has been absent for more than a specified number of days: their names will be highlighted. To stop the application, close the window using the “x” mark on the top right corner of the windows. 
+In order to run, eclipse must have permisssion to access your device camera.
+
+The teacher will start the application(by clicking run on eclipse) with the camera facing the students, or have a zoom meeting or anything that shows student faces is fine. To take attendence, the teacher will click on the Attendence tab at the top. As students walk past the camera, or a picture of the student is shown, the application will record their names into the attendance system. Later, the teacher can use the application to view the attendence of the student by going under the records tab and selecting their class. Click on the date and classes, and the tab in the application to see the current students and absent students will be made. The system can also flag the student that has been absent for more than a specified number of days: their names will be highlighted. To edit, remove, or add a new student or classroom, click on the Students tab and click on the appropriate button and fill out the fields. To add a student, you must then go to the PhotoShoot tab in order to add their face to the database. To stop the application, close the window using the “x” mark on the top right corner of the windows. 
 
 Features List (THE ONLY SECTION THAT CANNOT CHANGE LATER):
 Must-have Features:
@@ -41,30 +43,42 @@ Continuous monitoring of the class and flag unknown faces: This way the teacher 
 
 Class List:
 
-Main (creates an AttendanceSystem object)
-FacialRecognition (will use OpenCV to recognize faces)
+Attendence (this class is responsible for recognizing faces by using device camera)
+Classroom (Students will be added to the classroom, and a new class will be created)
+Main (creates an Attendance and SQLiteManager object and creates the window)
+PhotoShoot (uses the devince camera to add the photo of a new student to the database)
+RecordsPanel (does the gui for the Records tab created in Main, will be able to view attendence history from here)
 SQLiteManager (database)
 School (contains a group of classrooms)
-Classroom (Students will be added to the classroom, and a new class will be created.)
-Student (Students will require a name and a photo, but you can also not have a photo temporarily)
-DrawingSurface (in charge of menu and gui components)
+Student (Students will require a name, photo, and id)
+StudentPanel (does the gui for the Student tab created in main, can add/remove/edit students/classrooms here)
+WebCam (allows the program to use the device camera eg. in PhotoShoot and Attendence)
 
 Credits:
 [Gives credit for project components. This includes both internal credit (your group members) and external credit (other people, websites, libraries). To do this:
 List the group members and describe how each member contributed to the completion of the final program. This could be classes written, art assets created, leadership/organizational skills exercises, or other tasks. Initially, this is how you plan on splitting the work.
 Give credit to all outside resources used. This includes downloaded images or sounds, external java libraries, parent/tutor/student coding help, etc.]
 
-Arya
-In charge of facial recognition
-In charge of classroom and adding new students to system
-In charge of storing past data
+Arya:
+
+Overall: in charge of facial recognition aspect and database
+Classes:
+   - Attendence
+   - Main
+   - PhotoShoot
+   - SQLiteManager
+   - WebCam
 
 Xinyu
-In charge of Student class
-In charge of School class 
-In charge of any art for GUI components
 
-OpenCV.org: https://opencv.org/releases/
-OpenCV Java Documentation:  https://docs.opencv.org/master/javadoc/index.html
-Processing.org: https://processing.org/ 
+Overall: in charge of gui components and creating the heirarchy of the school
+   - Classroom
+   - RecordsPanel
+   - School
+   - StudentPanel (Arya helped Xinyu understand how to access database for gui implementation)
+   - Student
+ 
+Used to allow OpenCV to run on any device without download:
+https://mvnrepository.com/artifact/opencv/opencv/4.0.0-0
+http://bytedeco.org/
 
