@@ -22,9 +22,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 /**
- * 
+ * This is the class that creates a Student tab on the GUI
  * @author Arya Khokhar
- *this is the class that creates a Student tab on the GUI
+ * @version 4
  */
 public class StudentPanel extends JPanel {
 	List<Student> allStudents;
@@ -67,6 +67,7 @@ public class StudentPanel extends JPanel {
 	}
 	/**
 	 * this method can modify Classrooms based on what buttons are pressed
+	 * add a new classroom, edit a selected, or remove
 	 */
 	void addClassrooms() {
 		allClassrooms = sqlManager.getAllClassrooms();
@@ -215,7 +216,7 @@ public class StudentPanel extends JPanel {
 		add(cmdPanel, gbc);
 	}
 /**
- * this method adds Students 
+ * this method adds Students, edits them, or removes them
  */
 	void addStudents() {
 		
