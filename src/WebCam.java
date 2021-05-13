@@ -19,8 +19,9 @@ import org.bytedeco.opencv.opencv_core.Scalar;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 import org.bytedeco.opencv.opencv_videoio.VideoCapture;
+
 /** 
- * this is the class that allows the program to acsess the computer camra
+ * this is the class that allows the program to access the computer camra
  * @author Arya Khokhar
  *
  */
@@ -128,7 +129,7 @@ public class WebCam extends JPanel {
 		faceCascade.close();
 	}
 	/**
-	 * draws the rectangle arond the face, so the area inside the rectangle will be snapped.
+	 * draws the rectangle around the face, so the area inside the rectangle will be snapped.
 	 * @param int index
 	 * @param Mat frame
 	 * @param Rect rect: the rectangle to be drawn
@@ -174,7 +175,6 @@ public class WebCam extends JPanel {
 	
 
 	/**
-	 * 
 	 * @param m
 	 * @return a Mat m
 	 */
