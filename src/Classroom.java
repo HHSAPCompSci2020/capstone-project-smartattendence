@@ -10,8 +10,10 @@ import java.util.ArrayList;
 public class Classroom {
 
 	ArrayList<Student> classroom;
-	String name;
-
+	private int id;
+	private String courseName;
+	private String teacherName;
+	
 	/**
 	 * creates a new classroom
 	 * @pre cannot have two students with the same name!!
@@ -25,8 +27,9 @@ public class Classroom {
 	 * @pre cannot have two students with the same name!!
 	 * @param String name: the name of the class
 	 */
-	public Classroom(String name) {
-		this.name = name;
+	public Classroom(int id, String courseName) {
+		this.id = id;
+		this.courseName = courseName;
 	}
 
 	/**
@@ -50,31 +53,23 @@ public class Classroom {
 
 	}
 
-	public String getName() {
-		return name;
+	public String getCourseName() {
+		return courseName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setCouseName(String courseName) {
+		this.courseName = courseName;
 	}
 
-	public int getPeriod() {
-		// TODO Auto-generated method stub
-		return -1;
+	public String getTeacherName() {
+		return teacherName;
 	}
 
-	public String getTeacher() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
 	}
 
-	public void setPeriod(int period) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setTeacher(String teacher) {
-		// TODO Auto-generated method stub
-
+	public int getId() {
+		return id;
 	}
 }
