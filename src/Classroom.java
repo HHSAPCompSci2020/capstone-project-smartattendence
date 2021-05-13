@@ -13,6 +13,7 @@ public class Classroom {
 	String name;
 
 	/**
+	 * creates a new classroom
 	 * @pre cannot have two students with the same name!!
 	 */
 	public Classroom() {
@@ -20,7 +21,9 @@ public class Classroom {
 	}
 
 	/**
+	 * creates a new classroom
 	 * @pre cannot have two students with the same name!!
+	 * @param String name: the name of the class
 	 */
 	public Classroom(String name) {
 		this.name = name;
