@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class Classroom {
 
 	ArrayList<Student> classroom;
+<<<<<<< HEAD
 	private int id;
 	private String courseName;
 	private String teacherName;
@@ -17,17 +18,30 @@ public class Classroom {
 
 	/**
 	 * @pre cannot have two classrooms with the same name!!
+=======
+	String name;
+
+	/**
+	 * @pre cannot have two students with the same name!!
+>>>>>>> 4a81b7bfc0c39f8060a08383c1f236eb4b9669fd
 	 */
 	public Classroom() {
 		classroom = null;
 	}
 
 	/**
+<<<<<<< HEAD
 	 * @pre cannot have two classrooms with the same name!!
 	 */
 	public Classroom(int id, String courseName) {
 		this.id = id;
 		this.courseName = courseName;
+=======
+	 * @pre cannot have two students with the same name!!
+	 */
+	public Classroom(String name) {
+		this.name = name;
+>>>>>>> 4a81b7bfc0c39f8060a08383c1f236eb4b9669fd
 	}
 
 	/**
@@ -51,6 +65,7 @@ public class Classroom {
 
 	}
 
+<<<<<<< HEAD
 	public String getCourseName() {
 		return courseName;
 	}
@@ -69,5 +84,33 @@ public class Classroom {
 
 	public int getId() {
 		return id;
+=======
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getPeriod() {
+		// TODO Auto-generated method stub
+		return -1;
+	}
+
+	public String getTeacher() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPeriod(int period) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setTeacher(String teacher) {
+		// TODO Auto-generated method stub
+
+>>>>>>> 4a81b7bfc0c39f8060a08383c1f236eb4b9669fd
 	}
 }
