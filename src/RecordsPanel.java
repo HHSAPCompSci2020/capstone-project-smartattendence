@@ -2,20 +2,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
  
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
  
 public class RecordsPanel extends JPanel {
@@ -45,7 +40,7 @@ public class RecordsPanel extends JPanel {
        classroomListModel = new DefaultListModel<String>();
        if (allClassrooms != null) {
            for(Classroom classroom : allClassrooms) {
-               classroomListModel.addElement(classroom.getName());
+               classroomListModel.addElement(classroom.getCourseName());
            }
        }
        classroomList = new JList<String>(classroomListModel);
