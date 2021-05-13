@@ -22,7 +22,13 @@ import org.bytedeco.opencv.opencv_core.Scalar;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 
-
+/**
+ * This class represents the PhotoShoot panel of the window
+ * and uses the webcam to add new students
+ * @author Arya Khokhar
+ * @verison 2
+ *
+ */
 public class PhotoShoot extends WebCam {
 	final static int GRID_WIDTH = 4;
 	final static int GRID_HEIGHT = 4;
@@ -36,10 +42,7 @@ public class PhotoShoot extends WebCam {
 	static JButton saveButton = new JButton("Save");
     boolean capturing = false;
     boolean startFaceDetect = false;
-	/**
-	 * 
-	 * @param String dataDir: data passed in
-	 */
+	
 	PhotoShoot(String dataDir) {
 		super(dataDir);
 
@@ -110,6 +113,9 @@ public class PhotoShoot extends WebCam {
         add(iconPanel, BorderLayout.LINE_END);
 	}
 
+	/**
+	 * This method adds the new face
+	 */
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 		
 		if (index == -1 && startFaceDetect == false) {
@@ -135,12 +141,17 @@ public class PhotoShoot extends WebCam {
 
 	}
 	
+	/**
+	 * This method starts the camera
+	 */
 	public void startCapture() {
 		startFaceDetect = false;
 		snapped = false;
 		super.startCapture();
 	}
-	
+	/**
+	 * This method stops the camera
+	 */
 	public void stopCapture() {
 		startFaceDetect = false;
 		snapped = false;

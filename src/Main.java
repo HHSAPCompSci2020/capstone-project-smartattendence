@@ -16,7 +16,7 @@ import javax.swing.event.ChangeListener;
 /**
  * This class is the main class and creates the window.
  * @author Arya Khokhar
- * @version 2
+ * @version 4
  */
 public class Main
 {
