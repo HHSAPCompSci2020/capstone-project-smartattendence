@@ -12,7 +12,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
- 
+
+/**
+ * This class represents the RecordsPanel in the window
+ * which will displays the attendance
+ * @author xinyu zhao
+ *
+ */
 public class RecordsPanel extends JPanel {
    private SQLiteManager sqlManager;
    private String dataDir;
@@ -24,7 +30,8 @@ public class RecordsPanel extends JPanel {
    GridBagConstraints constraints = new GridBagConstraints();
  
    static JButton showButton = new JButton("Show Attendence");
- /**
+ 
+   /**
   * this is a RecordsPanel, that creates a Panel called Records on the GUI interface.
   * @param String dataDir: data passed in
   * @param SQLiteManager sqlManager:

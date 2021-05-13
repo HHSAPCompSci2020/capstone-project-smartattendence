@@ -2,7 +2,8 @@ import java.awt.Image;
 
 /**
  * This class represent a Student.
- * @author Xinyu Zhao
+ * @author xinyu zhao
+ * @version 3
  *
  */
 public class Student {

@@ -13,7 +13,7 @@ import org.sqlite.SQLiteDataSource;
 /**
  * This class represents the database.
  * @author Arya Khokhar
- * @version 3
+ * @version 4
  */
 public class SQLiteManager {
 	private SQLiteDataSource ds;
@@ -103,9 +103,16 @@ public class SQLiteManager {
 				+ "(678, 2350, '2021-05-03', 0), (678, 2350, '2021-05-06', 1)");
 	}
 	
+	/**
+	 * This method allows a student to be added to the database
+	 * @param student to be added
+	 */
 	public void addStudent(Student student) {		
 	}
 
+	/**
+	 * @return list of all students in the database
+	 */
 	public List<Student> getAllStudents() {
 		try {
 			Statement stmt = conn.createStatement();
@@ -131,16 +138,33 @@ public class SQLiteManager {
 		return null;
 	}
 
+	/**
+	 * Edits the given student
+	 * @param student to be edited
+	 */
 	public void updateStudent(Student student) {
 	}
 
+	/**
+	 * Returns information about a student 
+	 * @param studentName name of to be returned
+	 * @return inputed student
+	 */
 	public Student getStudent(String studentName) {
 		return null;
 	}
 
+	/**
+	 * Deletes a student fron database
+	 * @param studentName to be deleted
+	 */
 	public void deleteStudent(String studentName) {		
 	}
 
+	/**
+	 * Returns all classes in the school
+	 * @return list of all classrooms
+	 */
 	public List<Classroom> getAllClassrooms() {
 		try {
 			Statement stmt = conn.createStatement();
@@ -166,16 +190,31 @@ public class SQLiteManager {
 		return null;
 	}
 
+	/**
+	 * @param classroom to be added
+	 */
 	public void addClassroom(Classroom classroom) {
 	}
 
+	/**
+	 * @param classroom to get students 
+	 * @return list of students in the class
+	 */
 	public List<Student> getStudentsInClassroom(Classroom classroom) {
 		return null;
 	}
 
+	/**
+	 * @param classroomName to be deleted
+	 */
 	public void deleteClassroom(String classroomName) {
 	}
 
+	/**
+	 * 
+	 * @param classroomName name of classroom to be returned
+	 * @return info about class
+	 */
 	public Classroom getClassroom(String classroomName) {
 		try {
 			Statement stmt = conn.createStatement();
@@ -200,9 +239,17 @@ public class SQLiteManager {
 		return null;
 	}
 
+	/**
+	 * @param newClassroom to be edited
+	 */
 	public void updateClassroom(Classroom newClassroom) {
 	}
 	
+	/**
+	 * @param classroom to find attendance from
+	 * @param date to get attendance from
+	 * @return list of students and whether they were absent or not
+	 */
 	public List<Student> getStudentAttendence(Classroom classroom, Date date) {
 		return null;
 	}

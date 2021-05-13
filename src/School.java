@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 
 /**
- * @author Xinyu Zhao This is the School class, where it will contain Classroom
+ * This is the School class, where it will contain Classroom
+ * @author Xinyu Zhao 
+ * @version 2
  */
 public class School {
 

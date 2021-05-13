@@ -42,9 +42,8 @@ import static org.bytedeco.opencv.global.opencv_core.*;
 
 /**
  * This class is responsible for recognizing faces.
- * 
  * @author Arya Khokhar
- * @version 3
+ * @version 4
  */
 public class Attendence extends WebCam {
 
@@ -70,8 +69,7 @@ public class Attendence extends WebCam {
 	int count = 1;
 
 	/**
-	 * Attendence creates buttons and pannel for the Attandance page.
-	 * 
+	 * Attendance creates buttons and panel for the Attendance page.
 	 * @param String dataDir: original Data
 	 */
 	public Attendence(String dataDir) {
@@ -148,11 +146,10 @@ public class Attendence extends WebCam {
 	}
 
 	/**
-	 * this method
-	 * 
-	 * @param int  index:
-	 * @param Mat  grayFrame:
-	 * @param Rect rect:
+	 * This method processes the faces from the camera and adds them
+	 * @param int  index: number of faces
+	 * @param Mat  grayFrame: matrix of image
+	 * @param Rect rect: 
 	 */
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 
@@ -168,8 +165,7 @@ public class Attendence extends WebCam {
 	}
 
 	/**
-	 * this method starts the video capture.
-	 * 
+	 * This method starts the video capture when the program runs
 	 * @param String classRoom: the classroom that you start the capture in
 	 */
 	public void startCapture(String classRoom) {
@@ -231,7 +227,7 @@ public class Attendence extends WebCam {
 	 * This method predicts which Student in the database matches most closely with
 	 * the current photo.
 	 * 
-	 * @param mat
+	 * @param mat : represents the input image
 	 * @return The name of the student
 	 */
 	public String predict(Mat mat) {
@@ -264,8 +260,8 @@ public class Attendence extends WebCam {
 
 	/**
 	 * 
-	 * @param ArrayList<Mat>     images: images caputured of the students
-	 * @param ArrayList<Integer> labels:
+	 * @param ArrayList<Mat>     images: images captured of the students
+	 * @param ArrayList<Integer> labels: what their corresponding names are
 	 */
 	private void readTrainingData(ArrayList<Mat> images, ArrayList<Integer> labels) {
 		BufferedReader br;
@@ -290,6 +286,11 @@ public class Attendence extends WebCam {
 
 	}
 
+	/**
+	 * This method generated the training data that the program will use
+	 * to recognize the students
+	 * @throws Exception
+	 */
 	private void createTrainingList() throws Exception {
 		List<String> faceNames = new ArrayList<String>();
 		List<List<String>> faceFiles = new ArrayList<List<String>>();
@@ -328,7 +329,7 @@ public class Attendence extends WebCam {
 	}
 
 	/**
-	 * reads the datas
+	 * reads the data
 	 */
 	private void readNameMapData() {
 		BufferedReader br;
