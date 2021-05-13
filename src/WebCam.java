@@ -95,9 +95,7 @@ public class WebCam extends JPanel {
 	
 	/**
 	 * This method detects any faces within the camera.
-	 * @param Mat frame
-	 * @param boolean isSnapped
-	 * @throws IOException
+	 * @param frame image frame to look into
 	 */
 	public void processFrame(Mat frame) throws IOException
 	{
@@ -129,10 +127,10 @@ public class WebCam extends JPanel {
 		faceCascade.close();
 	}
 	/**
-	 * draws the rectangle around the face, so the area inside the rectangle will be snapped.
-	 * @param int index
-	 * @param Mat frame
-	 * @param Rect rect: the rectangle to be drawn
+	 * This method processes the faces from the camera and adds them
+	 * @param index number of faces
+	 * @param frame matrix of image
+	 * @param rect rectangular coordinates containing face in frame
 	 */
 	public void processFaceRect(int index, Mat frame, Rect rect) {
 	}

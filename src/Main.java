@@ -24,10 +24,10 @@ public class Main
 	static String dataDir;
 	
 	static PhotoShoot photoPane;
-	static Attendence attendencePane;
+	static Attendance attendancePane;
 	static JPanel recordsPane, studentPane;
 	
-	static int attendencePaneIndex, photoPaneIndex, recordsPaneIndex, studentPaneIndex;
+	static int attendancePaneIndex, photoPaneIndex, recordsPaneIndex, studentPaneIndex;
 	
 	public static void main(String[] args) {
 		createDataDirectory();
@@ -46,10 +46,10 @@ public class Main
 
         int startIndex = 0;
         
-        attendencePaneIndex = startIndex++;
-        attendencePane = new Attendence(dataDir);
-        attendencePane.setLayout(new GridLayout(1, 1));
-        tabbedPane.addTab(" Attendence ", null, attendencePane,
+        attendancePaneIndex = startIndex++;
+        attendancePane = new Attendance(dataDir);
+        attendancePane.setLayout(new GridLayout(1, 1));
+        tabbedPane.addTab(" Attendence ", null, attendancePane,
                 "Take attendence");
 
         photoPaneIndex = startIndex++;
@@ -71,13 +71,13 @@ public class Main
             public void stateChanged(ChangeEvent e) {
             	System.out.println("Selected tab = " + tabbedPane.getSelectedIndex());
                 if(tabbedPane.getSelectedIndex() == photoPaneIndex) {
-                	attendencePane.stopCapture();
+                	attendancePane.stopCapture();
                 	photoPane.startCapture();
-                } if (tabbedPane.getSelectedIndex() == attendencePaneIndex) {
+                } if (tabbedPane.getSelectedIndex() == attendancePaneIndex) {
                 	photoPane.stopCapture();
-                	attendencePane.startCapture("classroom1");
+                	attendancePane.startCapture("classroom1");
                 } else {
-                	attendencePane.stopCapture();
+                	attendancePane.stopCapture();
                 	photoPane.stopCapture();
                 }
             }

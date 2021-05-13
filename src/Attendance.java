@@ -45,7 +45,7 @@ import static org.bytedeco.opencv.global.opencv_core.*;
  * @author Arya Khokhar
  * @version 4
  */
-public class Attendence extends WebCam {
+public class Attendance extends WebCam {
 
 	EigenFaceRecognizer efr;
 	LBPHFaceRecognizer lfr;
@@ -57,7 +57,7 @@ public class Attendence extends WebCam {
 
 	String classRoom;
 
-	boolean takingAttendence = false;
+	boolean takingAttendance = false;
 	DefaultListModel<String> listModel = new DefaultListModel<String>();
 	JList<String> list;
 
@@ -70,9 +70,9 @@ public class Attendence extends WebCam {
 
 	/**
 	 * Attendance creates buttons and panel for the Attendance page.
-	 * @param String dataDir: original Data
+	 * @param dataDir original Data
 	 */
-	public Attendence(String dataDir) {
+	public Attendance(String dataDir) {
 
 		super(dataDir);
 
@@ -99,21 +99,21 @@ public class Attendence extends WebCam {
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				takingAttendence = true;
+				takingAttendance = true;
 			}
 		});
 
 		stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				takingAttendence = false;
+				takingAttendance = false;
 			}
 		});
 
 		resetButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				takingAttendence = false;
+				takingAttendance = false;
 				listModel.clear();
 			}
 		});
@@ -147,13 +147,13 @@ public class Attendence extends WebCam {
 
 	/**
 	 * This method processes the faces from the camera and adds them
-	 * @param int  index: number of faces
-	 * @param Mat  grayFrame: matrix of image
-	 * @param Rect rect: 
+	 * @param index number of faces
+	 * @param grayFrame matrix of image
+	 * @param rect rectangular coordinates containing face in frame
 	 */
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 
-		if (index < 0 || !takingAttendence) {
+		if (index < 0 || !takingAttendance) {
 			return;
 		}
 
@@ -166,7 +166,7 @@ public class Attendence extends WebCam {
 
 	/**
 	 * This method starts the video capture when the program runs
-	 * @param String classRoom: the classroom that you start the capture in
+	 * @param classRoom the classroom that you start the capture in
 	 */
 	public void startCapture(String classRoom) {
 		super.stopCapture();
@@ -184,7 +184,7 @@ public class Attendence extends WebCam {
 	 * this method stops the video capture. no parameters are needed.
 	 */
 	public void stopCapture() {
-		takingAttendence = false;
+		takingAttendance = false;
 		super.stopCapture();
 	}
 
@@ -227,7 +227,7 @@ public class Attendence extends WebCam {
 	 * This method predicts which Student in the database matches most closely with
 	 * the current photo.
 	 * 
-	 * @param mat : represents the input image
+	 * @param mat represents the input image
 	 * @return The name of the student
 	 */
 	public String predict(Mat mat) {
@@ -260,8 +260,8 @@ public class Attendence extends WebCam {
 
 	/**
 	 * 
-	 * @param ArrayList<Mat>     images: images captured of the students
-	 * @param ArrayList<Integer> labels: what their corresponding names are
+	 * @param images images captured of the students
+	 * @param labels what their corresponding names are
 	 */
 	private void readTrainingData(ArrayList<Mat> images, ArrayList<Integer> labels) {
 		BufferedReader br;

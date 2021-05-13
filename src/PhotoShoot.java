@@ -26,7 +26,7 @@ import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
  * This class represents the PhotoShoot panel of the window
  * and uses the webcam to add new students
  * @author Arya Khokhar
- * @verison 2
+ * @version 2
  *
  */
 public class PhotoShoot extends WebCam {
