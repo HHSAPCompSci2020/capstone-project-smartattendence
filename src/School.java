@@ -8,6 +8,7 @@ public class School {
 	ArrayList<Classroom> s;
 
 	/**
+	 * creates a new School
 	 * @pre cannot have two classes with the same name
 	 */
 	public School() {
@@ -15,6 +16,7 @@ public class School {
 	}
 
 	/**
+	 * creates a new school
 	 * @pre cannot have two classes with the same name
 	 * @param ArrayList<classroom> input, a input list of classes.
 	 */

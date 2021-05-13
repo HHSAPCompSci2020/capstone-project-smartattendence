@@ -24,7 +24,11 @@ public class RecordsPanel extends JPanel {
    GridBagConstraints constraints = new GridBagConstraints();
  
    static JButton showButton = new JButton("Show Attendence");
- 
+ /**
+  * this is a RecordsPanel, that creates a Panel called Records on the GUI interface.
+  * @param String dataDir: data passed in
+  * @param SQLiteManager sqlManager:
+  */
    public RecordsPanel(String dataDir, SQLiteManager sqlManager) {
        this.dataDir = dataDir;
        this.sqlManager = sqlManager;

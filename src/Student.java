@@ -11,12 +11,18 @@ public class Student {
 	private final String STUDENT_NAME;
 	private boolean attendance = false;
 	private int grade;
-
+/**
+ * creates a Student, defult set the id to 0 and name to ""
+ */
 	public Student() {
 		STUDENT_ID = 0;
 		STUDENT_NAME = "";
 	}
-
+/**
+ * creates a student with id and name
+ * @param int id: the student's Id number
+ * @param String name: the student's name
+ */
 	public Student(int id, String name) {
 		STUDENT_ID = id;
 		STUDENT_NAME = name;
@@ -24,7 +30,7 @@ public class Student {
 
 	/**
 	 * This method returns the ID of the student
-	 * @return int ID
+	 * @return the student's id number
 	 */
 	public int getID() {
 		return STUDENT_ID;
@@ -32,7 +38,7 @@ public class Student {
 
 	/**
 	 * This method return the name of the student
-	 * @return String name
+	 * @return the name of the student. 
 	 */
 	public String getName() {
 		return STUDENT_NAME;
@@ -46,11 +52,17 @@ public class Student {
 		return attendance;
 	}
 
-
+/**
+ * this method returns the grade the student is in.
+ * @return and int of the grade student is in
+ */
 	public int getGrade() {
 		return grade;
 	}
-
+/**
+ * this method sets the grade of the student.
+ * @param int grade: the grade number you want to set to
+ */
 
 	public void setGrade(int grade) {
 		grade = this.getGrade();

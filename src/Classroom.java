@@ -52,23 +52,38 @@ public class Classroom {
 		classroom.remove(s);
 
 	}
-
+/**
+ * the method called to get the name of the course
+ * @return a String of the courseName
+ */
 	public String getCourseName() {
 		return courseName;
 	}
-
+	/**
+	 * sets the courseName to what you want it to be
+	 * @param String courseName: the course name you want to change
+	 */
 	public void setCouseName(String courseName) {
 		this.courseName = courseName;
 	}
-
+	/**
+	 * return the name of the course teacher
+	 * @return a String of the teacherName
+	 */
 	public String getTeacherName() {
 		return teacherName;
 	}
-
+	/**
+	 * sets the teacherName to what you want it to be
+	 * @param String teacherName: the course name you want to change
+	 */
 	public void setTeacherName(String teacherName) {
 		this.teacherName = teacherName;
 	}
-
+/**
+ * return the id of the course.
+ * @return int id, the id of the course
+ */
 	public int getId() {
 		return id;
 	}
