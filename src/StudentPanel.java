@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -17,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class StudentPanel extends JPanel {
 	List<Student> allStudents;
@@ -70,10 +74,28 @@ public class StudentPanel extends JPanel {
 		classroomListModel = new DefaultListModel<String>();
 		if (allClassrooms != null) {
 			for(Classroom classroom : allClassrooms) {
-				classroomListModel.addElement(classroom.getName());
+				classroomListModel.addElement(classroom.getCourseName());
 			}
 		}
 		classroomList = new JList<String>(classroomListModel);
+		
+		classroomList.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    String classroomName = classroomList.getSelectedValue().toString();
+                    Classroom classroom = sqlManager.getClassroom(classroomName);
+            		classStudents = sqlManager.getStudentsInClassroom(classroom);
+            		classStudentListModel.clear();
+            		if (classStudents != null) {
+            			for(Student student : classStudents) {
+            				classStudentListModel.addElement(student.getName());
+            			}
+            		}
+                  }
+			}
+		});
 		
 		addClassroomButton.addActionListener(new ActionListener() {
 			@Override
@@ -81,7 +103,7 @@ public class StudentPanel extends JPanel {
 				Classroom classroom = getClassroomInfo(null);
 				if (classroom != null) {
 					sqlManager.addClassroom(classroom);
-					classroomListModel.addElement(classroom.getName());
+					classroomListModel.addElement(classroom.getCourseName());
 				}
 			}
 		});
@@ -138,8 +160,6 @@ public class StudentPanel extends JPanel {
 	}
 	
 	void addClassStudents() {
-		classStudents = sqlManager.getStudentsInClassroom(null);
-
 		JPanel cmdPanel = new JPanel();
 		cmdPanel.setLayout(new GridLayout(2, 1));
 		cmdPanel.add(addStudentToClassroom);
@@ -293,7 +313,7 @@ public class StudentPanel extends JPanel {
 			try {
 				int id = Integer.parseInt(idText.getText().trim());
 				String name = nameText.getText().trim();
-				String grade = gradeText.getText().trim();
+				int grade = Integer.parseInt(gradeText.getText().trim());
 				if (student == null) {
 					student = new Student(id, name);
 				} else {
@@ -311,34 +331,31 @@ public class StudentPanel extends JPanel {
 	}
 	
 	private Classroom getClassroomInfo(Classroom classroom) {
-		JTextField nameText = new JTextField();
-		JTextField periodText = new JTextField();
-		JTextField teacherText = new JTextField();
+		JTextField idText = new JTextField();
+		JTextField courseNameText = new JTextField();
+		JTextField teacherNameText = new JTextField();
 
 		if (classroom != null) {
-			nameText.setText(classroom.getName());
-
-			periodText.setText(classroom.getPeriod() + "");
-			teacherText.setText(classroom.getTeacher());
+			idText.setText(classroom.getId() + "");
+			courseNameText.setText(classroom.getCourseName());
+			teacherNameText.setText(classroom.getTeacherName());
 		}
 
-		final JComponent[] inputs = new JComponent[] { new JLabel("Name"), nameText,
-				new JLabel("Period"), periodText, new JLabel("Teacher"), teacherText };
+		final JComponent[] inputs = new JComponent[] { new JLabel("Id"), idText,
+				new JLabel("Course"), courseNameText, new JLabel("Teacher"), teacherNameText };
 
 		int result = JOptionPane.showConfirmDialog(this, inputs, "Classroom Info",
 				  JOptionPane.OK_CANCEL_OPTION);
 
 		if (result == JOptionPane.OK_OPTION) {
 			try {
-				String name = nameText.getText().trim();
-				int period = Integer.parseInt(periodText.getText().trim());
-				String teacher = teacherText.getText().trim();
+				int id = Integer.parseInt(idText.getText().trim());
+				String courseName = courseNameText.getText().trim();
+				String teacherName = teacherNameText.getText().trim();
 				if (classroom == null) {
-					classroom = new Classroom(name);
-				} else {
-					classroom.setPeriod(period);
-					classroom.setTeacher(teacher);
+					classroom = new Classroom(id, courseName);
 				}
+				classroom.setTeacherName(teacherName);
 
 				return classroom;
 			} catch (Exception e) {

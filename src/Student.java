@@ -10,7 +10,7 @@ public class Student {
 	private final int STUDENT_ID;
 	private final String STUDENT_NAME;
 	private boolean attendance = false;
-	private String grade;
+	private int grade;
 
 	public Student() {
 		STUDENT_ID = 0;
@@ -47,12 +47,12 @@ public class Student {
 	}
 
 
-	public String getGrade() {
+	public int getGrade() {
 		return grade;
 	}
 
 
-	public void setGrade(String grade) {
+	public void setGrade(int grade) {
 		grade = this.getGrade();
 	}
 
