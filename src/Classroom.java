@@ -25,7 +25,8 @@ public class Classroom {
 	/**
 	 * creates a new classroom
 	 * @pre cannot have two students with the same name!!
-	 * @param String name: the name of the class
+	 * @param courseName the name of the class
+	 * @param id of the student
 	 */
 	public Classroom(int id, String courseName) {
 		this.id = id;
@@ -61,7 +62,7 @@ public class Classroom {
 	}
 	/**
 	 * sets the courseName to what you want it to be
-	 * @param String courseName: the course name you want to change
+	 * @param courseName the course name you want to change
 	 */
 	public void setCouseName(String courseName) {
 		this.courseName = courseName;
@@ -75,7 +76,7 @@ public class Classroom {
 	}
 	/**
 	 * sets the teacherName to what you want it to be
-	 * @param String teacherName: the course name you want to change
+	 * @param teacherName the course name you want to change
 	 */
 	public void setTeacherName(String teacherName) {
 		this.teacherName = teacherName;

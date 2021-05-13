@@ -20,7 +20,7 @@ public class School {
 	/**
 	 * creates a new school
 	 * @pre cannot have two classes with the same name
-	 * @param ArrayList<classroom> input, a input list of classes.
+	 * @param input a input list of classes.
 	 */
 	public School(ArrayList<Classroom> input) {
 		s = input;
@@ -29,7 +29,7 @@ public class School {
 	/**
 	 * This method adds a classroom to the school
 	 * 
-	 * @param Classroom classroom, the classroom you want to add
+	 * @param classroom the classroom you want to add
 	 * @post Changes ArrayList field
 	 */
 	public void add(Classroom classroom) {
@@ -40,7 +40,7 @@ public class School {
 	/**
 	 * This method removes a classroom from the school
 	 * 
-	 * @param Classroom classroom, the classroom you want to remove
+	 * @param classroom the classroom you want to remove
 	 * @post Changes ArrayList field
 	 */
 	public void remove(Classroom classroom) {

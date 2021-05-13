@@ -33,8 +33,8 @@ public class RecordsPanel extends JPanel {
  
    /**
   * this is a RecordsPanel, that creates a Panel called Records on the GUI interface.
-  * @param String dataDir: data passed in
-  * @param SQLiteManager sqlManager:
+  * @param dataDir data directory (sqlite, face images, meta data)
+  * @param sqlManager database manager
   */
    public RecordsPanel(String dataDir, SQLiteManager sqlManager) {
        this.dataDir = dataDir;

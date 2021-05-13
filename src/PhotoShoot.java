@@ -161,9 +161,9 @@ public class PhotoShoot extends WebCam {
 	
 	/**
 	 * This method detects any faces within the camera.
-	 * @param frame
-	 * @param isSnapped
-	 * @throws IOException
+	 * @param frame video frame in which face needs to be detected
+	 * @param isSnapped denotes mode of operation detection versus recognition
+	 * @throws IOException throws exception is error occurs during processing
 	 */
 	public void detectFace(Mat frame, boolean isSnapped) throws IOException
 	{

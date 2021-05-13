@@ -96,6 +96,7 @@ public class WebCam extends JPanel {
 	/**
 	 * This method detects any faces within the camera.
 	 * @param frame image frame to look into
+	 * @throws IOException throws exception if error occurs during processing
 	 */
 	public void processFrame(Mat frame) throws IOException
 	{
@@ -173,27 +174,28 @@ public class WebCam extends JPanel {
 	
 
 	/**
-	 * @param m
-	 * @return a Mat m
+	 * @param m Converts Mat m to BufferedImage data type
+	 * @return a BufferedImage equivalent of parameter m
 	 */
     public BufferedImage Mat2BufferedImage(Mat m){
 
-     int type = BufferedImage.TYPE_BYTE_GRAY;
-     if ( m.channels() > 1 ) {
-         type = BufferedImage.TYPE_3BYTE_BGR;
-     }
-     int bufferSize = m.channels()*m.cols()*m.rows();
-     byte [] b = new byte[bufferSize];
-     m.data().get(b);
-     BufferedImage image = new BufferedImage(m.cols(),m.rows(), type);
-     final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-     System.arraycopy(b, 0, targetPixels, 0, b.length);  
-     return image;
+		int type = BufferedImage.TYPE_BYTE_GRAY;
+		if (m.channels() > 1) {
+			type = BufferedImage.TYPE_3BYTE_BGR;
+		}
+		int bufferSize = m.channels() * m.cols() * m.rows();
+		byte[] b = new byte[bufferSize];
+		m.data().get(b);
+		BufferedImage image = new BufferedImage(m.cols(), m.rows(), type);
+		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+		System.arraycopy(b, 0, targetPixels, 0, b.length);
+		return image;
     }
+    
 	/**
 	 * saves the image
-	 * @param imageName
-	 * @param mat
+	 * @param imageName the file name to be created containing the image in m.
+	 * @param mat the image to be saved
 	 */
 	public void saveImageFile(String imageName, Mat mat) {
 		File faceDataDir = new File(dataDir + File.separator + "faces");

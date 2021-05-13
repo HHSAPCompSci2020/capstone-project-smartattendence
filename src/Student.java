@@ -21,8 +21,8 @@ public class Student {
 	}
 /**
  * creates a student with id and name
- * @param int id: the student's Id number
- * @param String name: the student's name
+ * @param id the student's Id number
+ * @param name the student's name
  */
 	public Student(int id, String name) {
 		STUDENT_ID = id;
@@ -62,7 +62,7 @@ public class Student {
 	}
 /**
  * this method sets the grade of the student.
- * @param int grade: the grade number you want to set to
+ * @param grade the grade number you want to set to
  */
 
 	public void setGrade(int grade) {
