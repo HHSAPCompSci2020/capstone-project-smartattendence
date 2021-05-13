@@ -19,7 +19,11 @@ import org.bytedeco.opencv.opencv_core.Scalar;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 import org.bytedeco.opencv.opencv_videoio.VideoCapture;
-
+/** 
+ * this is the class that allows the program to acsess the computer camra
+ * @author Arya Khokhar
+ *
+ */
 public class WebCam extends JPanel {
 	final static int GRID_WIDTH = 4;
 	final static int GRID_HEIGHT = 4;
@@ -40,7 +44,9 @@ public class WebCam extends JPanel {
 		System.out.println("datadir=" + dataDir);
 		System.out.println("classifierPath=" + classifierPath);
 	}
-	
+	/**
+	 * starts the video capture
+	 */
 	public void startCapture() {
 		
 		Runnable cameraTask = new Runnable() {
@@ -78,7 +84,9 @@ public class WebCam extends JPanel {
 		new Thread(cameraTask).start();
 
 	}
-	
+	/**
+	 * stops the video capture
+	 */
 	public void stopCapture() {
 		System.out.println("Stopping video capture");
 		capturing = false;
@@ -86,8 +94,8 @@ public class WebCam extends JPanel {
 	
 	/**
 	 * This method detects any faces within the camera.
-	 * @param frame
-	 * @param isSnapped
+	 * @param Mat frame
+	 * @param boolean isSnapped
 	 * @throws IOException
 	 */
 	public void processFrame(Mat frame) throws IOException
@@ -119,7 +127,12 @@ public class WebCam extends JPanel {
 		processFaceRect(-2, null, null);
 		faceCascade.close();
 	}
-	
+	/**
+	 * draws the rectangle arond the face, so the area inside the rectangle will be snapped.
+	 * @param int index
+	 * @param Mat frame
+	 * @param Rect rect: the rectangle to be drawn
+	 */
 	public void processFaceRect(int index, Mat frame, Rect rect) {
 	}
 	
@@ -160,7 +173,11 @@ public class WebCam extends JPanel {
 	
 	
 
-	
+	/**
+	 * 
+	 * @param m
+	 * @return a Mat m
+	 */
     public BufferedImage Mat2BufferedImage(Mat m){
 
      int type = BufferedImage.TYPE_BYTE_GRAY;
@@ -175,7 +192,11 @@ public class WebCam extends JPanel {
      System.arraycopy(b, 0, targetPixels, 0, b.length);  
      return image;
     }
-	
+	/**
+	 * saves the image
+	 * @param imageName
+	 * @param mat
+	 */
 	public void saveImageFile(String imageName, Mat mat) {
 		File faceDataDir = new File(dataDir + File.separator + "faces");
 		if (!faceDataDir.exists()){

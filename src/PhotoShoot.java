@@ -22,6 +22,7 @@ import org.bytedeco.opencv.opencv_core.Scalar;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 
+
 public class PhotoShoot extends WebCam {
 	final static int GRID_WIDTH = 4;
 	final static int GRID_HEIGHT = 4;
@@ -35,7 +36,10 @@ public class PhotoShoot extends WebCam {
 	static JButton saveButton = new JButton("Save");
     boolean capturing = false;
     boolean startFaceDetect = false;
-	
+	/**
+	 * 
+	 * @param String dataDir: data passed in
+	 */
 	PhotoShoot(String dataDir) {
 		super(dataDir);
 
