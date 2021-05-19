@@ -107,7 +107,23 @@ public class SQLiteManager {
 	 * This method allows a student to be added to the database
 	 * @param student to be added
 	 */
-	public void addStudent(Student student) {		
+	public void addStudent(Student student) {	
+		try {
+			Student s = getStudent(student.getID());
+			if (s != null) {
+				System.out.println("Student " + student.getID() + " already exists.");
+				return;
+			}
+			
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("insert into student (id, name, grade)"
+					+ "values (" + student.getID() + ",'" + student.getName() + "',"
+					+ student.getGrade() + ")");
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -143,22 +159,72 @@ public class SQLiteManager {
 	 * @param student to be edited
 	 */
 	public void updateStudent(Student student) {
+		try {
+			Student s = getStudent(student.getID());
+			if (s == null) {
+				System.out.println("Student does not exists.");
+				return;
+			}
+			
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("update student set name = '" + student.getName()
+				+ "', grade = " + student.getGrade()
+				+ " where id = " + student.getID());
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Returns information about a student 
-	 * @param studentName name of to be returned
+	 * @param studentId id of the student to be returned
 	 * @return inputed student
 	 */
-	public Student getStudent(String studentName) {
+	public Student getStudent(int studentId) {
+		try {
+			Statement stmt = conn.createStatement();
+			
+			ResultSet result = stmt.executeQuery("select id, name, grade from student "
+					+ " where id = " + studentId);
+			if (result.next()) {
+				int id = result.getInt(1);
+				String name = result.getString(2);
+				int grade = result.getInt(3);
+				
+				Student s = new Student(id, name);
+				s.setGrade(grade);
+				stmt.close();
+				return s;
+			}
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
 	/**
-	 * Deletes a student fron database
-	 * @param studentName to be deleted
+	 * Deletes a student from database
+	 * @param id student id to be deleted
 	 */
-	public void deleteStudent(String studentName) {		
+	public boolean deleteStudent(int id) {		
+		try {
+			Statement stmt = conn.createStatement();
+			
+			Student student = getStudent(id);
+			if (student == null) {
+				return false;
+			}
+			stmt.executeUpdate("delete from student where id = " + id);
+			stmt.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -194,34 +260,80 @@ public class SQLiteManager {
 	 * @param classroom to be added
 	 */
 	public void addClassroom(Classroom classroom) {
+		try {
+			Classroom c = getClassroom(classroom.getId());
+			if (c != null) {
+				System.out.println("Classroom " + c.getId() + " already exists.");
+				return;
+			}
+			
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("insert into classroom (id, course, teacher)"
+					+ "values (" + classroom.getId() + ",'" + classroom.getCourseName() + "','"
+					+ classroom.getTeacherName() + "')");
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * @param classroom to get students 
 	 * @return list of students in the class
 	 */
-	public List<Student> getStudentsInClassroom(Classroom classroom) {
+	public List<Integer> getStudentsInClassroom(int classroomId) {
+		try {
+			Statement stmt = conn.createStatement();
+			
+			ResultSet result = stmt.executeQuery("select student_id from student_classes where "
+					+" class_id = " + classroomId);
+			List<Integer> studentIds = new ArrayList<Integer>();
+			while (result.next()) {
+				int id = result.getInt(1);
+				studentIds.add(id);
+			}
+
+			stmt.close();
+			return studentIds;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
 	/**
-	 * @param classroomName to be deleted
+	 * @param classroomId to be deleted
 	 */
-	public void deleteClassroom(String classroomName) {
+	public boolean deleteClassroom(int classRoomId) {
+		try {
+			Statement stmt = conn.createStatement();
+			
+			Classroom classroom = getClassroom(classRoomId);
+			if (classroom == null) {
+				return false;
+			}
+			stmt.executeUpdate("delete from classroom where id = " + classRoomId);
+			stmt.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
 	 * 
-	 * @param classroomName name of classroom to be returned
+	 * @param classroomId Id of classroom to be returned
 	 * @return info about class
 	 */
-	public Classroom getClassroom(String classroomName) {
+	public Classroom getClassroom(int classRoomId) {
 		try {
 			Statement stmt = conn.createStatement();
 			
 			ResultSet result = stmt.executeQuery(
-					"select id, teacher, course from classroom where course = '"
-					+ classroomName + "'");;
+					"select id, teacher, course from classroom where id = " + classRoomId);;
 			if (result.next()) {
 				int id = result.getInt(1);
 				String teacher = result.getString(2);
@@ -240,9 +352,25 @@ public class SQLiteManager {
 	}
 
 	/**
-	 * @param newClassroom to be edited
+	 * @param newClassroom to be updated
 	 */
-	public void updateClassroom(Classroom newClassroom) {
+	public void updateClassroom(Classroom classroom) {
+		try {
+			Classroom c = getClassroom(classroom.getId());
+			if (c == null) {
+				System.out.println("Classroom does not exists.");
+				return;
+			}
+			
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("update classroom set course = '" + classroom.getCourseName()
+				+ "', teacher = '" + classroom.getTeacherName()
+				+ "' where id = " + classroom.getId());
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -252,5 +380,84 @@ public class SQLiteManager {
 	 */
 	public List<Student> getStudentAttendence(Classroom classroom, Date date) {
 		return null;
+	}
+	
+	/**
+	 * Check if a student is taking a class.
+	 * @param studentId student id to be checked if he/she is taking a class
+	 * @param classroomId classroom id which student is taking
+	 * @return boolean indicating if the student is taking a class
+	 */
+	public boolean checkStudentClassroom(int studentId, int classroomId) {
+		try {
+			Statement stmt = conn.createStatement();
+
+			ResultSet result = stmt.executeQuery("select student_id from student_classes where " + "student_id = "
+					+ studentId + " and class_id = " + classroomId);
+			if (result.next()) {
+				stmt.close();
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Adds a given student id to a given classroom id.
+	 * @param studentId student id to be added to a classroom
+	 * @param classroomId classroom id to which a student is to be added
+	 * @return boolean indicating if the student was added to the class
+	 */
+	public boolean addStudentToClassroom(int studentId, int classroomId) {
+		try {
+			
+			boolean found = checkStudentClassroom(studentId,  classroomId);
+			if (found) {
+				return false;
+			}
+			
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("insert into student_classes(student_id, class_id) values ("
+					+ studentId + ", " + classroomId + ")");
+
+			stmt.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Removes a given student id from a given classroom id.
+	 * @param studentId student id to be deleted from a classroom
+	 * @param classroomId classroom id from which a student is to be removed
+	 * @return boolean indicating if the student was removed from the class
+	 */
+	public boolean deleteStudentFromClassroom(int studentId, int classroomId) {
+		try {
+			
+			boolean found = checkStudentClassroom(studentId,  classroomId);
+			if (!found) {
+				return false;
+			}
+			
+			Statement stmt = conn.createStatement();
+			
+			stmt.executeUpdate("delete from student_classes where student_id = " + studentId
+					+ " and class_id = " + classroomId);
+			stmt.close();
+
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 }
