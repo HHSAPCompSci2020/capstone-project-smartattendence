@@ -90,7 +90,7 @@ public class PhotoShoot extends WebCam {
 							continue;
 						}
 						Student student = allStudents.get(index-1);
-						String imageName = student.getName() + "-" + student.getID();
+						String imageName = student.getName() + "__" + student.getID();
 						if (imageName != null && imageName.trim().length() > 0) {
 							imageName = imageName.trim().toLowerCase();
 							try {
