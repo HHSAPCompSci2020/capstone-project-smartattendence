@@ -200,14 +200,50 @@ public class StudentPanel extends JPanel {
 		addStudentToClassroom.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int classIndex = classroomList.getSelectedIndex();
+				if (classIndex < 0 ) {
+					return;
+				}
+				
+				Classroom classroom = allClassrooms.get(classIndex);
+				
+				int studentIndex = studentList.getSelectedIndex();
+				if (studentIndex < 0 ) {
+					return;
+				}
+				Student student = allStudents.get(studentIndex);
+				
+				if (sqlManager.addStudentToClassroom(student.getID(), classroom.getId())) {
+					classStudents.add(student);
+					classStudentListModel.addElement(student.getName());
+				}
+
 			}
 		});
 
 		removeStudentFromClassroom.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int classIndex = classroomList.getSelectedIndex();
+				if (classIndex < 0 ) {
+					return;
+				}
+				
+				Classroom classroom = allClassrooms.get(classIndex);
+
+				int classStudentIndex = classStudentList.getSelectedIndex();
+				if (classStudentIndex < 0 ) {
+					return;
+				}
+				Student student = classStudents.get(classStudentIndex);
+
+				if (sqlManager.deleteStudentFromClassroom(student.getID(), classroom.getId())) {
+					classStudents.remove(classStudentIndex);
+					classStudentListModel.remove(classStudentIndex);
+				}
 			}
 		});
+
 
 		classStudentList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		classStudentList.setLayoutOrientation(JList.VERTICAL);
