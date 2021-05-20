@@ -58,7 +58,7 @@ public class Attendance extends WebCam {
 	String trainingDataFile;
 	String nameMapDataFile;
 
-	int classroomId = -1;
+	int classroomIndex = -1;
 
 	boolean takingAttendance = false;
 	DefaultListModel<String> listPresentModel = new DefaultListModel<String>();
@@ -120,7 +120,26 @@ public class Attendance extends WebCam {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				int newClassroomIndex = classroomCombo.getSelectedIndex();
+				if (classroomIndex == -1 || newClassroomIndex == classroomIndex) {
+					return;
+				}
+				classroomIndex = newClassroomIndex;
+				int classroomId = allClasses.get(classroomIndex).getId();
+				List<Integer> studentIds = sqlManager.getStudentsInClassroom(classroomId);
+				if (studentIds != null) {
+					allClassStudents.clear();
+					absentStudents.clear();
+					listAbsentModel.removeAllElements();
+					presentStudents.clear();
+					listPresentModel.removeAllElements();
+					for (Integer id : studentIds) {
+						Student student = sqlManager.getStudent(id);
+						allClassStudents.add(student);
+						absentStudents.add(student);
+						listAbsentModel.addElement(student.getName());
+					}
+				}
 			}
 			
 		});
@@ -145,8 +164,11 @@ public class Attendance extends WebCam {
 				takingAttendance = false;
 				listPresentModel.clear();
 				listAbsentModel.clear();
+				presentStudents.clear();
+				absentStudents.clear();
 				for(Student student : allClassStudents) {
-					
+					absentStudents.add(student);
+					listAbsentModel.addElement(student.getName());
 				}
 			}
 		});
@@ -157,7 +179,7 @@ public class Attendance extends WebCam {
 		listPresent.setVisibleRowCount(-1);
 		JScrollPane listPresentScroller = new JScrollPane(listPresent);
 		listPresentScroller.setBorder(BorderFactory.createTitledBorder ("Present students"));
-		listPresentScroller.setPreferredSize(new Dimension(250, 200));
+		listPresentScroller.setPreferredSize(new Dimension(400, 300));
 
 		listAbsent = new JList<String>(listAbsentModel);
 		listAbsent.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -165,7 +187,7 @@ public class Attendance extends WebCam {
 		listAbsent.setVisibleRowCount(-1);
 		JScrollPane listAbsentScroller = new JScrollPane(listAbsent);
 		listAbsentScroller.setBorder(BorderFactory.createTitledBorder ("Absent students"));
-		listAbsentScroller.setPreferredSize(new Dimension(250, 200));
+		listAbsentScroller.setPreferredSize(new Dimension(400, 300));
 
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new GridBagLayout());
@@ -205,7 +227,25 @@ public class Attendance extends WebCam {
 		Mat resized = getResizedImage(grayFrame, rect);
 		String faceName = predict(resized);
 		if (faceName != null && faceName.length() > 0 && !listPresentModel.contains(faceName)) {
-			listPresentModel.addElement(faceName);
+			try {
+				int i = faceName.indexOf("__");
+				if (i == -1) {
+					return;
+				}
+				int id = Integer.parseInt(faceName.substring(i+2));
+				for(int k = 0; k < absentStudents.size(); k++) {
+					Student student = absentStudents.get(k);
+					if (student.getID() == id) {
+						absentStudents.remove(k);
+						listAbsentModel.remove(k);
+						presentStudents.add(student);
+						listPresentModel.addElement(student.getName());
+						break;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -227,12 +267,17 @@ public class Attendance extends WebCam {
 	
 	void updateStudentAndClasses() {
 		allClasses = sqlManager.getAllClassrooms();
-		if (classroomId == -1 && allClasses != null && allClasses.size() > 0) {
-			classroomId = allClasses.get(0).getId();
+		if (classroomIndex == -1 && allClasses != null && allClasses.size() > 0) {
+			classroomIndex = 0;
 		}
 		
-		if (classroomId >= 0) {
+		if (classroomIndex > allClasses.size() - 1) {
+			classroomIndex = 0;
+		}
+				
+		if (classroomIndex >= 0) {
 			List<Student> prevClassStudents = new ArrayList<Student>();
+			int classroomId = allClasses.get(classroomIndex).getId();
 			List<Integer> studentIds = sqlManager.getStudentsInClassroom(classroomId);
 			if (studentIds != null) {
 				prevClassStudents.addAll(allClassStudents);
@@ -288,14 +333,15 @@ public class Attendance extends WebCam {
 		}
 		
 		if (allClasses != null) {
+			int savedClassroomIndex = classroomIndex;
+			classroomIndex = -1;
 			classroomComboModel.removeAllElements();
 			for(int i = 0; i < allClasses.size(); i++) {
 				Classroom c = allClasses.get(i);
 				classroomComboModel.addElement(c.getCourseName());
-				if (c.getId() == classroomId) {
-					classroomCombo.setSelectedIndex(i);
-				}
 			}
+			classroomIndex = savedClassroomIndex;
+			classroomCombo.setSelectedIndex(classroomIndex);
 		}
 	}
 	
