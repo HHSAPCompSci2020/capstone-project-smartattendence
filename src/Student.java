@@ -66,7 +66,7 @@ public class Student {
  */
 
 	public void setGrade(int grade) {
-		grade = this.getGrade();
+		this.grade = grade;
 	}
 
 

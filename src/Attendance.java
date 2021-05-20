@@ -18,9 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -55,11 +58,22 @@ public class Attendance extends WebCam {
 	String trainingDataFile;
 	String nameMapDataFile;
 
-	String classRoom;
+	int classroomId = -1;
 
 	boolean takingAttendance = false;
-	DefaultListModel<String> listModel = new DefaultListModel<String>();
-	JList<String> list;
+	DefaultListModel<String> listPresentModel = new DefaultListModel<String>();
+	JList<String> listPresent;
+
+	DefaultListModel<String> listAbsentModel = new DefaultListModel<String>();
+	JList<String> listAbsent;
+	
+	List<Classroom> allClasses;
+	JComboBox<String> classroomCombo;
+	DefaultComboBoxModel<String> classroomComboModel = new DefaultComboBoxModel<String>();
+	
+	List<Student> allClassStudents = new ArrayList<Student>();
+	List<Student> presentStudents = new ArrayList<Student>();
+	List<Student> absentStudents = new ArrayList<Student>();
 
 	static JButton startButton = new JButton("Start");
 	static JButton stopButton = new JButton("Stop");
@@ -67,14 +81,16 @@ public class Attendance extends WebCam {
 	static JButton saveButton = new JButton("Save");
 
 	int count = 1;
+	SQLiteManager sqlManager;
 
 	/**
 	 * Attendance creates buttons and panel for the Attendance page.
 	 * @param dataDir original Data
 	 */
-	public Attendance(String dataDir) {
+	public Attendance(String dataDir, SQLiteManager sqlManager) {
 
 		super(dataDir);
+		this.sqlManager = sqlManager;
 
 		nameMapDataFile = Paths.get(dataDir, "faces", "namemap.txt").toString();
 		trainingDataFile = Paths.get(dataDir, "faces", "training.txt").toString();
@@ -90,11 +106,24 @@ public class Attendance extends WebCam {
 		add(vidpanel, BorderLayout.LINE_START);
 
 		JPanel cmdPanel = new JPanel();
-		cmdPanel.setLayout(new GridLayout(2, 2));
+		cmdPanel.setLayout(new GridLayout(3, 2));
 		cmdPanel.add(startButton);
 		cmdPanel.add(stopButton);
 		cmdPanel.add(resetButton);
 		cmdPanel.add(saveButton);
+		
+		classroomCombo = new JComboBox<String>(classroomComboModel);
+		cmdPanel.add(new JLabel("Classroom"));
+		cmdPanel.add(classroomCombo);
+		
+		classroomCombo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+			
+		});
 
 		startButton.addActionListener(new ActionListener() {
 			@Override
@@ -114,18 +143,29 @@ public class Attendance extends WebCam {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				takingAttendance = false;
-				listModel.clear();
+				listPresentModel.clear();
+				listAbsentModel.clear();
+				for(Student student : allClassStudents) {
+					
+				}
 			}
 		});
 
-		listModel.addElement("one");
-		listModel.addElement("two");
-		list = new JList<String>(listModel);
-		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list.setVisibleRowCount(-1);
-		JScrollPane listScroller = new JScrollPane(list);
-		listScroller.setPreferredSize(new Dimension(250, 80));
+		listPresent = new JList<String>(listPresentModel);
+		listPresent.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listPresent.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		listPresent.setVisibleRowCount(-1);
+		JScrollPane listPresentScroller = new JScrollPane(listPresent);
+		listPresentScroller.setBorder(BorderFactory.createTitledBorder ("Present students"));
+		listPresentScroller.setPreferredSize(new Dimension(250, 200));
+
+		listAbsent = new JList<String>(listAbsentModel);
+		listAbsent.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listAbsent.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		listAbsent.setVisibleRowCount(-1);
+		JScrollPane listAbsentScroller = new JScrollPane(listAbsent);
+		listAbsentScroller.setBorder(BorderFactory.createTitledBorder ("Absent students"));
+		listAbsentScroller.setPreferredSize(new Dimension(250, 200));
 
 		JPanel rightPanel = new JPanel();
 		rightPanel.setLayout(new GridBagLayout());
@@ -138,9 +178,14 @@ public class Attendance extends WebCam {
 		rightPanel.add(cmdPanel, c);
 
 		c.gridy = 1;
-		c.ipady = 500;
-		c.ipadx = 200;
-		rightPanel.add(listScroller, c);// , BorderLayout.PAGE_END);
+		//c.ipady = 400;
+		//c.ipadx = 200;
+		rightPanel.add(listPresentScroller, c);
+
+		c.gridy = 2;
+		//c.ipady = 400;
+		//c.ipadx = 200;
+		rightPanel.add(listAbsentScroller, c);
 
 		add(rightPanel, BorderLayout.LINE_END);
 	}
@@ -159,8 +204,8 @@ public class Attendance extends WebCam {
 
 		Mat resized = getResizedImage(grayFrame, rect);
 		String faceName = predict(resized);
-		if (faceName != null && faceName.length() > 0 && !listModel.contains(faceName)) {
-			listModel.addElement(faceName);
+		if (faceName != null && faceName.length() > 0 && !listPresentModel.contains(faceName)) {
+			listPresentModel.addElement(faceName);
 		}
 	}
 
@@ -168,10 +213,10 @@ public class Attendance extends WebCam {
 	 * This method starts the video capture when the program runs
 	 * @param classRoom the classroom that you start the capture in
 	 */
-	public void startCapture(String classRoom) {
+	public void startCapture() {
 		super.stopCapture();
-		this.classRoom = classRoom;
 		try {
+			updateStudentAndClasses();
 			createTrainingList();
 			train();
 		} catch (Exception e) {
@@ -179,7 +224,81 @@ public class Attendance extends WebCam {
 		}
 		super.startCapture();
 	}
-
+	
+	void updateStudentAndClasses() {
+		allClasses = sqlManager.getAllClassrooms();
+		if (classroomId == -1 && allClasses != null && allClasses.size() > 0) {
+			classroomId = allClasses.get(0).getId();
+		}
+		
+		if (classroomId >= 0) {
+			List<Student> prevClassStudents = new ArrayList<Student>();
+			List<Integer> studentIds = sqlManager.getStudentsInClassroom(classroomId);
+			if (studentIds != null) {
+				prevClassStudents.addAll(allClassStudents);
+				allClassStudents.clear();
+				for (Integer id : studentIds) {
+					allClassStudents.add(sqlManager.getStudent(id));
+				}
+			}
+			for(Student student : allClassStudents ) {
+				int index = -1;
+				for(int i = 0; i < prevClassStudents.size(); i++) {
+					Student prevStudent = prevClassStudents.get(i);
+					if (prevStudent.getID() == student.getID()) {
+						index = i;
+						break;
+					}
+				}
+				
+				if (index == -1) {
+					absentStudents.add(student);
+					listAbsentModel.addElement(student.getName());
+				}
+			}
+			for(Student prevStudent : prevClassStudents ) {
+				int index = -1;
+				for(int i = 0; i < allClassStudents.size(); i++) {
+					Student student = allClassStudents.get(i);
+					if (student.getID() == prevStudent.getID()) {
+						index = i;
+						break;
+					}
+				}
+				
+				if (index == -1) {
+					for(int i = 0; i < absentStudents.size(); i++) {
+						Student absent = absentStudents.get(i);
+						if (absent.getID() == prevStudent.getID()) {
+							absentStudents.remove(i);
+							listAbsentModel.remove(i);
+							break;
+						}
+					}
+					for(int i = 0; i < presentStudents.size(); i++) {
+						Student present = presentStudents.get(i);
+						if (present.getID() == prevStudent.getID()) {
+							presentStudents.remove(i);
+							listPresentModel.remove(i);
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		if (allClasses != null) {
+			classroomComboModel.removeAllElements();
+			for(int i = 0; i < allClasses.size(); i++) {
+				Classroom c = allClasses.get(i);
+				classroomComboModel.addElement(c.getCourseName());
+				if (c.getId() == classroomId) {
+					classroomCombo.setSelectedIndex(i);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * this method stops the video capture. no parameters are needed.
 	 */

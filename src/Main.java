@@ -47,13 +47,13 @@ public class Main
         int startIndex = 0;
         
         attendancePaneIndex = startIndex++;
-        attendancePane = new Attendance(dataDir);
+        attendancePane = new Attendance(dataDir, sqlManager);
         attendancePane.setLayout(new GridLayout(1, 1));
         tabbedPane.addTab(" Attendence ", null, attendancePane,
                 "Take attendence");
 
         photoPaneIndex = startIndex++;
-        photoPane = new PhotoShoot(dataDir);
+        photoPane = new PhotoShoot(dataDir, sqlManager);
         tabbedPane.addTab(" PhotoShoot ", null, photoPane,
                 "Take student pictures");
         
@@ -75,7 +75,7 @@ public class Main
                 	photoPane.startCapture();
                 } if (tabbedPane.getSelectedIndex() == attendancePaneIndex) {
                 	photoPane.stopCapture();
-                	attendancePane.startCapture("classroom1");
+                	attendancePane.startCapture();
                 } else {
                 	attendancePane.stopCapture();
                 	photoPane.stopCapture();

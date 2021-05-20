@@ -8,12 +8,17 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.bytedeco.leptonica.dealloc_fn;
 import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Rect;
@@ -21,6 +26,7 @@ import org.bytedeco.opencv.opencv_core.RectVector;
 import org.bytedeco.opencv.opencv_core.Scalar;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  * This class represents the PhotoShoot panel of the window
@@ -35,16 +41,23 @@ public class PhotoShoot extends WebCam {
 	final static int GRID_SIZE = GRID_WIDTH*GRID_HEIGHT;
 
 	static JLabel[] jlabels = new JLabel[GRID_SIZE];
-	static JTextField[] textLabels = new JTextField[GRID_SIZE];
+	static JComboBox[] textLabels = new JComboBox[GRID_SIZE];
 	static Mat[] faceImages = new Mat[GRID_SIZE];
 	static boolean snapped = false;
 	static JButton snapButton = new JButton("Snap");
 	static JButton saveButton = new JButton("Save");
     boolean capturing = false;
     boolean startFaceDetect = false;
+    
+	private SQLiteManager sqlManager;
+
+    
+	List<Student> allStudents;
 	
-	PhotoShoot(String dataDir) {
+	PhotoShoot(String dataDir, SQLiteManager sqlManager) {
 		super(dataDir);
+		this.sqlManager = sqlManager;
+		
 
         setLayout(new BorderLayout());
         vidpanel = new JLabel();
@@ -59,7 +72,7 @@ public class PhotoShoot extends WebCam {
 			public void actionPerformed(ActionEvent e) {
 				for(int i = 1; i < GRID_SIZE; ++i) {
 					jlabels[i].setIcon(null);
-					textLabels[i].setText("");
+					textLabels[i].setSelectedIndex(0);
 					faceImages[i] = null;
 				}
 				snapped = true;
@@ -72,13 +85,18 @@ public class PhotoShoot extends WebCam {
 			public void actionPerformed(ActionEvent e) {
 				for(int i = 1; i < GRID_SIZE; ++i) {
 					if (faceImages[i] != null && textLabels[i] != null) {
-						String imageName = textLabels[i].getText();
+						int index = textLabels[i].getSelectedIndex();
+						if (index == 0) {
+							continue;
+						}
+						Student student = allStudents.get(index-1);
+						String imageName = student.getName() + "-" + student.getID();
 						if (imageName != null && imageName.trim().length() > 0) {
 							imageName = imageName.trim().toLowerCase();
 							try {
 								saveImageFile(imageName, faceImages[i]);
 								jlabels[i].setIcon(null);
-								textLabels[i].setText("");
+								textLabels[i].setSelectedIndex(0);
 								faceImages[i] = null;
 							} catch (Exception err) {
 								err.printStackTrace();
@@ -105,7 +123,9 @@ public class PhotoShoot extends WebCam {
             JPanel imagePanel = new JPanel();
             imagePanel.setLayout(new BorderLayout());
             imagePanel.add(l, BorderLayout.NORTH);
-            textLabels[i] = new JTextField();
+            textLabels[i] = new JComboBox<String>();
+            textLabels[i].setEditable(true);
+
             imagePanel.add(textLabels[i], BorderLayout.SOUTH);
         	iconPanel.add(imagePanel);
         }
@@ -147,8 +167,23 @@ public class PhotoShoot extends WebCam {
 	public void startCapture() {
 		startFaceDetect = false;
 		snapped = false;
+		allStudents = sqlManager.getAllStudents();
+
+        for(int i = 1; i < GRID_SIZE; ++i) {
+        	DefaultComboBoxModel<String> studentListModel = new DefaultComboBoxModel<String>();
+        	if (allStudents != null) {
+        		studentListModel.addElement("-- select---");
+        		for(Student student : allStudents) {
+        			studentListModel.addElement(student.getName());
+        		}
+        	}
+        	textLabels[i].setModel(studentListModel);
+        	AutoCompleteDecorator.decorate(textLabels[i]);
+        }
+
 		super.startCapture();
 	}
+
 	/**
 	 * This method stops the camera
 	 */
