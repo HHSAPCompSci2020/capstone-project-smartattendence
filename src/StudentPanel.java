@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.BorderFactory;
 /**
  * This is the class that creates a Student tab on the GUI
  * @author Arya Khokhar
@@ -163,6 +164,8 @@ public class StudentPanel extends JPanel {
 		classroomList.setLayoutOrientation(JList.VERTICAL);
 		classroomList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(classroomList);
+		listScroller.setBorder(BorderFactory.createTitledBorder ("Classrooms"));
+
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -249,6 +252,8 @@ public class StudentPanel extends JPanel {
 		classStudentList.setLayoutOrientation(JList.VERTICAL);
 		classStudentList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(classStudentList);
+		listScroller.setBorder(BorderFactory.createTitledBorder ("Students in Classroom (left)"));
+
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -349,6 +354,7 @@ public class StudentPanel extends JPanel {
 		studentList.setLayoutOrientation(JList.VERTICAL);
 		studentList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(studentList);
+		listScroller.setBorder(BorderFactory.createTitledBorder ("All Students"));
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
