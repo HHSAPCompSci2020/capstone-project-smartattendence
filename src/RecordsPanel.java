@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -20,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -74,7 +76,7 @@ public class RecordsPanel extends JPanel {
 
        if (allClassrooms != null) {
            for(Classroom classroom : allClassrooms) {
-               classroomListModel.addElement(classroom.getCourseName());
+        	   classroomComboModel.addElement(classroom.getCourseName());
            }
        }
        classroomCombo = new JComboBox<String>(classroomComboModel);

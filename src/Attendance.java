@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
@@ -33,6 +35,7 @@ import javax.swing.ListSelectionModel;
 
 import java.nio.IntBuffer;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.MatVector;
@@ -79,7 +82,7 @@ public class Attendance extends WebCam {
 	static JButton stopButton = new JButton("Stop");
 	static JButton resetButton = new JButton("Reset");
 	static JButton saveButton = new JButton("Save");
-
+	
 	int count = 1;
 	SQLiteManager sqlManager;
 
@@ -169,6 +172,23 @@ public class Attendance extends WebCam {
 				for(Student student : allClassStudents) {
 					absentStudents.add(student);
 					listAbsentModel.addElement(student.getName());
+				}
+			}
+		});
+
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				takingAttendance = false;
+				int classroomIndex = classroomCombo.getSelectedIndex();
+				Classroom classroom = allClasses.get(classroomIndex);
+				int classroomId = classroom.getId();
+				Date date = new Date();
+				for(Student student : presentStudents) {
+					sqlManager.saveStudentAttendence(classroomId, student.getID(), date, true);
+				}
+				for(Student student : absentStudents) {
+					sqlManager.saveStudentAttendence(classroomId, student.getID(), date, false);
 				}
 			}
 		});
@@ -464,14 +484,35 @@ public class Attendance extends WebCam {
 			if (!faceDir.isDirectory()) {
 				continue;
 			}
-			faceNames.add(faceDir.getName());
+			String faceName = faceDir.getName();
+			int i = faceName.indexOf("__");
+			if (i == -1) {
+				continue;
+			}
+			int id = Integer.parseInt(faceName.substring(i+2));
+			boolean studentInClass = false;
+			for(Student student : allClassStudents) {
+				if (student.getID() == id) {
+					studentInClass = true;
+					break;
+				}
+			}
+			
+			if (studentInClass == false) {
+				continue;
+			}
+
 			List<String> imgFiles = new ArrayList<String>();
 			for (File imgFile : faceDir.listFiles()) {
 				if (imgFile.getAbsolutePath().endsWith(".pgm")) {
 					imgFiles.add(imgFile.getAbsolutePath());
 				}
 			}
-			faceFiles.add(imgFiles);
+			
+			if (imgFiles.size() > 0) {
+				faceNames.add(faceName);
+				faceFiles.add(imgFiles);
+			}
 		}
 
 		File nameMapFile = new File(nameMapDataFile);
@@ -514,4 +555,10 @@ public class Attendance extends WebCam {
 		}
 
 	}
+	
+	void showHelp() {
+		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
+		JOptionPane.showMessageDialog(null, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
+	}
+
 }

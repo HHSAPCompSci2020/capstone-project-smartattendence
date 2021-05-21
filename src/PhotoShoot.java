@@ -44,8 +44,8 @@ public class PhotoShoot extends WebCam {
 	static JComboBox[] textLabels = new JComboBox[GRID_SIZE];
 	static Mat[] faceImages = new Mat[GRID_SIZE];
 	static boolean snapped = false;
-	static JButton snapButton = new JButton("Snap");
-	static JButton saveButton = new JButton("Save");
+	static JButton snapButton = new JButton("Take Picture");
+	static JButton saveButton = new JButton("Save Picture");
     boolean capturing = false;
     boolean startFaceDetect = false;
     
@@ -172,7 +172,7 @@ public class PhotoShoot extends WebCam {
         for(int i = 1; i < GRID_SIZE; ++i) {
         	DefaultComboBoxModel<String> studentListModel = new DefaultComboBoxModel<String>();
         	if (allStudents != null) {
-        		studentListModel.addElement("-- select---");
+        		studentListModel.addElement("--select--");
         		for(Student student : allStudents) {
         			studentListModel.addElement(student.getName());
         		}
