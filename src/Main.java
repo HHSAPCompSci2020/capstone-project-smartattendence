@@ -50,16 +50,16 @@ public class Main
         attendancePane = new Attendance(dataDir, sqlManager);
         tabbedPane.addTab(" Attendence ", null, attendancePane,
                 "Take attendence");
-
-        photoPaneIndex = startIndex++;
-        photoPane = new PhotoShoot(dataDir, sqlManager);
-        tabbedPane.addTab(" PhotoShoot ", null, photoPane,
-                "Take student pictures");
         
         recordsPaneIndex = startIndex++;
         recordsPane = new RecordsPanel(dataDir, sqlManager);
         tabbedPane.addTab(" Records ", null, recordsPane,
                 "View attendence records");
+        
+        photoPaneIndex = startIndex++;
+        photoPane = new PhotoShoot(dataDir, sqlManager);
+        tabbedPane.addTab(" PhotoShoot ", null, photoPane,
+                "Take student pictures");
         
         studentPaneIndex = startIndex++;
         studentPane = new StudentPanel(dataDir, sqlManager);
@@ -68,7 +68,7 @@ public class Main
 
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-            	System.out.println("Selected tab = " + tabbedPane.getSelectedIndex());
+            	//System.out.println("Selected tab = " + tabbedPane.getSelectedIndex());
                 if(tabbedPane.getSelectedIndex() == photoPaneIndex) {
                 	attendancePane.stopCapture();
                 	photoPane.startCapture();
@@ -86,7 +86,7 @@ public class Main
  	    jframe.pack();
 
         tabbedPane.setSelectedIndex(-1);
-        tabbedPane.setSelectedIndex(studentPaneIndex);
+        tabbedPane.setSelectedIndex(attendancePaneIndex);
 	}
 	
 	static String createDataDirectory() {
@@ -114,11 +114,11 @@ public class Main
 	}
 	
     static void saveResource(String resourcePath, String savePath) {
-    	System.out.println(resourcePath + ", " + savePath);
+    	//System.out.println(resourcePath + ", " + savePath);
     	Main m = new Main();
         ClassLoader classLoader = m.getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(resourcePath);
-        System.out.println("resource dir " + inputStream);
+        //System.out.println("resource dir " + inputStream);
 	    File saveFile = new File(savePath);
 	    try {
 			Files.copy(inputStream, saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);

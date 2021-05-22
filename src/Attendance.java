@@ -50,47 +50,54 @@ import static org.bytedeco.opencv.global.opencv_core.*;
 /**
  * This class is responsible for the attendance panel and respective GUI. It is
  * also responsible for recognizing faces and taking attendance.
+ * 
  * @author Arya Khokhar
- * @version 5
+ * @version 8
  */
 public class Attendance extends WebCam {
 
-	EigenFaceRecognizer efr;
-	LBPHFaceRecognizer lfr;
-	FisherFaceRecognizer ffr;
-	Map<Integer, String> nameMap = new HashMap<Integer, String>();
+	// Machine learning models
+	private EigenFaceRecognizer efr;
+	private LBPHFaceRecognizer lfr;
+	private FisherFaceRecognizer ffr;
+	private Map<Integer, String> nameMap = new HashMap<Integer, String>();
 
-	String trainingDataFile;
-	String nameMapDataFile;
+	private String trainingDataFile;
+	private String nameMapDataFile;
 
-	int classroomIndex = -1;
+	private int classroomIndex = -1;
 
-	boolean takingAttendance = false;
-	DefaultListModel<String> listPresentModel = new DefaultListModel<String>();
-	JList<String> listPresent;
+	private boolean takingAttendance = false;
+	private DefaultListModel<String> listPresentModel = new DefaultListModel<String>();
+	private JList<String> listPresent;
 
-	DefaultListModel<String> listAbsentModel = new DefaultListModel<String>();
-	JList<String> listAbsent;
-	
-	List<Classroom> allClasses;
-	JComboBox<String> classroomCombo;
-	DefaultComboBoxModel<String> classroomComboModel = new DefaultComboBoxModel<String>();
-	
-	List<Student> allClassStudents = new ArrayList<Student>();
-	List<Student> presentStudents = new ArrayList<Student>();
-	List<Student> absentStudents = new ArrayList<Student>();
+	private DefaultListModel<String> listAbsentModel = new DefaultListModel<String>();
+	private JList<String> listAbsent;
 
-	static JButton startButton = new JButton("Start");
-	static JButton stopButton = new JButton("Stop");
-	static JButton resetButton = new JButton("Reset");
-	static JButton saveButton = new JButton("Save");
-	
-	int count = 1;
-	SQLiteManager sqlManager;
+	private List<Classroom> allClasses;
+	private JComboBox<String> classroomCombo;
+	private DefaultComboBoxModel<String> classroomComboModel = new DefaultComboBoxModel<String>();
+
+	private List<Student> allClassStudents = new ArrayList<Student>();
+	private List<Student> presentStudents = new ArrayList<Student>();
+	private List<Student> absentStudents = new ArrayList<Student>();
+
+	private static JButton startButton = new JButton("Start");
+	private static JButton stopButton = new JButton("Stop");
+	private static JButton resetButton = new JButton("Reset");
+	private static JButton saveButton = new JButton("Save");
+
+	private int count = 1;
+	protected SQLiteManager sqlManager;
 
 	/**
-	 * Attendance creates buttons and panel for the Attendance page.
-	 * @param dataDir original Data
+	 * This constructor creates the files in the faces folder for machine learning
+	 * and sets up the GUI components of the panel. It also contains the code for
+	 * what to do when each button is pressed, including saving the data to the
+	 * database.
+	 * 
+	 * @param dataDir    is the path to the directory that is passes to WebCam
+	 * @param sqlManager is the database object
 	 */
 	public Attendance(String dataDir, SQLiteManager sqlManager) {
 
@@ -100,12 +107,8 @@ public class Attendance extends WebCam {
 		nameMapDataFile = Paths.get(dataDir, "faces", "namemap.txt").toString();
 		trainingDataFile = Paths.get(dataDir, "faces", "training.txt").toString();
 
-		// testing statements
-		System.out.println("nameMapDataFile=" + nameMapDataFile);
-		System.out.println("trainingDataFile=" + trainingDataFile);
-
 		setLayout(new GridBagLayout());
-        vidpanel = new JLabel("    Pleae wait while video is loading...");
+		vidpanel = new JLabel("    Pleae wait while video is loading...");
 		vidpanel.setPreferredSize(new Dimension(600, 300));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -123,13 +126,12 @@ public class Attendance extends WebCam {
 		cmdPanel.add(stopButton);
 		cmdPanel.add(resetButton);
 		cmdPanel.add(saveButton);
-		
+
 		classroomCombo = new JComboBox<String>(classroomComboModel);
 		cmdPanel.add(new JLabel("Classroom"));
 		cmdPanel.add(classroomCombo);
-		
-		classroomCombo.addActionListener(new ActionListener() {
 
+		classroomCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int newClassroomIndex = classroomCombo.getSelectedIndex();
@@ -153,7 +155,7 @@ public class Attendance extends WebCam {
 					}
 				}
 			}
-			
+
 		});
 
 		startButton.addActionListener(new ActionListener() {
@@ -178,7 +180,7 @@ public class Attendance extends WebCam {
 				listAbsentModel.clear();
 				presentStudents.clear();
 				absentStudents.clear();
-				for(Student student : allClassStudents) {
+				for (Student student : allClassStudents) {
 					absentStudents.add(student);
 					listAbsentModel.addElement(student.getName());
 				}
@@ -193,10 +195,10 @@ public class Attendance extends WebCam {
 				Classroom classroom = allClasses.get(classroomIndex);
 				int classroomId = classroom.getId();
 				Date date = new Date();
-				for(Student student : presentStudents) {
+				for (Student student : presentStudents) {
 					sqlManager.saveStudentAttendence(classroomId, student.getID(), date, true);
 				}
-				for(Student student : absentStudents) {
+				for (Student student : absentStudents) {
 					sqlManager.saveStudentAttendence(classroomId, student.getID(), date, false);
 				}
 			}
@@ -207,7 +209,7 @@ public class Attendance extends WebCam {
 		listPresent.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		listPresent.setVisibleRowCount(-1);
 		JScrollPane listPresentScroller = new JScrollPane(listPresent);
-		listPresentScroller.setBorder(BorderFactory.createTitledBorder ("Present students"));
+		listPresentScroller.setBorder(BorderFactory.createTitledBorder("Present students"));
 		listPresentScroller.setPreferredSize(new Dimension(400, 300));
 
 		listAbsent = new JList<String>(listAbsentModel);
@@ -215,7 +217,7 @@ public class Attendance extends WebCam {
 		listAbsent.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		listAbsent.setVisibleRowCount(-1);
 		JScrollPane listAbsentScroller = new JScrollPane(listAbsent);
-		listAbsentScroller.setBorder(BorderFactory.createTitledBorder ("Absent students"));
+		listAbsentScroller.setBorder(BorderFactory.createTitledBorder("Absent students"));
 		listAbsentScroller.setPreferredSize(new Dimension(400, 300));
 
 		JPanel rightPanel = new JPanel();
@@ -247,12 +249,12 @@ public class Attendance extends WebCam {
 		c.gridx = 1;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.NORTH;
-		
+
 		JButton helpButton = new JButton("Help");
 		helpButton.setBackground(Color.GREEN);
 		helpButton.setOpaque(true);
 		rightPanel.add(helpButton, c);
-		
+
 		helpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -262,10 +264,12 @@ public class Attendance extends WebCam {
 	}
 
 	/**
-	 * This method processes the faces from the camera and adds them
-	 * @param index number of faces
+	 * This method processes the faces from the camera and adds them to the machine
+	 * learning files. It overrides the method in its superclass. 
+	 * 
+	 * @param index     number of faces
 	 * @param grayFrame matrix of image
-	 * @param rect rectangular coordinates containing face in frame
+	 * @param rect      rectangular coordinates containing face in frame
 	 */
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
 
@@ -281,8 +285,8 @@ public class Attendance extends WebCam {
 				if (i == -1) {
 					return;
 				}
-				int id = Integer.parseInt(faceName.substring(i+2));
-				for(int k = 0; k < absentStudents.size(); k++) {
+				int id = Integer.parseInt(faceName.substring(i + 2));
+				for (int k = 0; k < absentStudents.size(); k++) {
 					Student student = absentStudents.get(k);
 					if (student.getID() == id) {
 						absentStudents.remove(k);
@@ -299,8 +303,8 @@ public class Attendance extends WebCam {
 	}
 
 	/**
-	 * This method starts the video capture when the program runs
-	 * @param classRoom the classroom that you start the capture in
+	 * This method starts the video capture when the program runs and creates and
+	 * trains the models on the current student list of the selected class.
 	 */
 	public void startCapture() {
 		super.stopCapture();
@@ -313,17 +317,30 @@ public class Attendance extends WebCam {
 		}
 		super.startCapture();
 	}
-	
-	void updateStudentAndClasses() {
+
+	/**
+	 * This method stops the video capture.
+	 */
+	public void stopCapture() {
+		takingAttendance = false;
+		super.stopCapture();
+	}
+
+	/**
+	 * This method occurs as soon as the Attendance tab is selected and makes sure
+	 * that the information the models have and that the class lists and students in
+	 * each class are updated with current information.
+	 */
+	public void updateStudentAndClasses() {
 		allClasses = sqlManager.getAllClassrooms();
 		if (classroomIndex == -1 && allClasses != null && allClasses.size() > 0) {
 			classroomIndex = 0;
 		}
-		
+
 		if (classroomIndex > allClasses.size() - 1) {
 			classroomIndex = 0;
 		}
-				
+
 		if (classroomIndex >= 0) {
 			List<Student> prevClassStudents = new ArrayList<Student>();
 			int classroomId = allClasses.get(classroomIndex).getId();
@@ -335,33 +352,33 @@ public class Attendance extends WebCam {
 					allClassStudents.add(sqlManager.getStudent(id));
 				}
 			}
-			for(Student student : allClassStudents ) {
+			for (Student student : allClassStudents) {
 				int index = -1;
-				for(int i = 0; i < prevClassStudents.size(); i++) {
+				for (int i = 0; i < prevClassStudents.size(); i++) {
 					Student prevStudent = prevClassStudents.get(i);
 					if (prevStudent.getID() == student.getID()) {
 						index = i;
 						break;
 					}
 				}
-				
+
 				if (index == -1) {
 					absentStudents.add(student);
 					listAbsentModel.addElement(student.getName());
 				}
 			}
-			for(Student prevStudent : prevClassStudents ) {
+			for (Student prevStudent : prevClassStudents) {
 				int index = -1;
-				for(int i = 0; i < allClassStudents.size(); i++) {
+				for (int i = 0; i < allClassStudents.size(); i++) {
 					Student student = allClassStudents.get(i);
 					if (student.getID() == prevStudent.getID()) {
 						index = i;
 						break;
 					}
 				}
-				
+
 				if (index == -1) {
-					for(int i = 0; i < absentStudents.size(); i++) {
+					for (int i = 0; i < absentStudents.size(); i++) {
 						Student absent = absentStudents.get(i);
 						if (absent.getID() == prevStudent.getID()) {
 							absentStudents.remove(i);
@@ -369,7 +386,7 @@ public class Attendance extends WebCam {
 							break;
 						}
 					}
-					for(int i = 0; i < presentStudents.size(); i++) {
+					for (int i = 0; i < presentStudents.size(); i++) {
 						Student present = presentStudents.get(i);
 						if (present.getID() == prevStudent.getID()) {
 							presentStudents.remove(i);
@@ -380,12 +397,12 @@ public class Attendance extends WebCam {
 				}
 			}
 		}
-		
+
 		if (allClasses != null) {
 			int savedClassroomIndex = classroomIndex;
 			classroomIndex = -1;
 			classroomComboModel.removeAllElements();
-			for(int i = 0; i < allClasses.size(); i++) {
+			for (int i = 0; i < allClasses.size(); i++) {
 				Classroom c = allClasses.get(i);
 				classroomComboModel.addElement(c.getCourseName());
 			}
@@ -393,17 +410,9 @@ public class Attendance extends WebCam {
 			classroomCombo.setSelectedIndex(classroomIndex);
 		}
 	}
-	
-	/**
-	 * this method stops the video capture. no parameters are needed.
-	 */
-	public void stopCapture() {
-		takingAttendance = false;
-		super.stopCapture();
-	}
 
 	/**
-	 * This method trains the model on the data.
+	 * This method trains the models on the data saved.
 	 */
 	public void train() {
 		ArrayList<Mat> images = new ArrayList<>();
@@ -427,13 +436,10 @@ public class Attendance extends WebCam {
 		lfr = LBPHFaceRecognizer.create();
 		ffr = FisherFaceRecognizer.create();
 
-		System.out.println("Starting training on " + images.size() + " data points ...");
-
 		efr.train(matImages, matLabels);
 		lfr.train(matImages, matLabels);
 		ffr.train(matImages, matLabels);
 
-		System.out.println("Starting completed...");
 		readNameMapData();
 	}
 
@@ -442,37 +448,31 @@ public class Attendance extends WebCam {
 	 * the current photo.
 	 * 
 	 * @param mat represents the input image
-	 * @return The name of the student
+	 * @return the name of the student
 	 */
 	public String predict(Mat mat) {
 		if (efr == null) {
 			return null;
 		}
-
 		int[] outLabel = new int[1];
 		double[] outConf = new double[1];
-		// System.out.print("found: ");
 
 		efr.predict(mat, outLabel, outConf);
 		String efrName = nameMap.get(outLabel[0]);
-		// System.out.print(" E=" + efrName);
-
 		ffr.predict(mat, outLabel, outConf);
 		String ffrName = nameMap.get(outLabel[0]);
-		// System.out.print(" F=" + efrName);
-
 		lfr.predict(mat, outLabel, outConf);
 		String lfrName = nameMap.get(outLabel[0]);
-		// System.out.print(" L=" + efrName);
 
 		if (efrName != null && efrName.contentEquals(ffrName) && efrName.equals(lfrName)) {
 			System.out.println("Found: " + efrName + "    " + count++);
 		}
-
 		return nameMap.get(outLabel[0]);
 	}
 
 	/**
+	 * This method reads the data from both ArrayLists to get which saved images
+	 * correspond to which machine learning index.
 	 * 
 	 * @param images images captured of the students
 	 * @param labels what their corresponding names are
@@ -501,11 +501,12 @@ public class Attendance extends WebCam {
 	}
 
 	/**
-	 * This method generated the training data that the program will use
-	 * to recognize the students
-	 * @throws Exception
+	 * This method generates the training data that the program will use to
+	 * recognize the students.
+	 * 
+	 * @throws IOException
 	 */
-	private void createTrainingList() throws Exception {
+	private void createTrainingList() throws IOException {
 		List<String> faceNames = new ArrayList<String>();
 		List<List<String>> faceFiles = new ArrayList<List<String>>();
 		File faceDataDir = new File(dataDir + File.separator + "faces");
@@ -518,15 +519,15 @@ public class Attendance extends WebCam {
 			if (i == -1) {
 				continue;
 			}
-			int id = Integer.parseInt(faceName.substring(i+2));
+
+			int id = Integer.parseInt(faceName.substring(i + 2));
 			boolean studentInClass = false;
-			for(Student student : allClassStudents) {
+			for (Student student : allClassStudents) {
 				if (student.getID() == id) {
 					studentInClass = true;
 					break;
 				}
 			}
-			
 			if (studentInClass == false) {
 				continue;
 			}
@@ -537,7 +538,7 @@ public class Attendance extends WebCam {
 					imgFiles.add(imgFile.getAbsolutePath());
 				}
 			}
-			
+
 			if (imgFiles.size() > 0) {
 				faceNames.add(faceName);
 				faceFiles.add(imgFiles);
@@ -564,7 +565,8 @@ public class Attendance extends WebCam {
 	}
 
 	/**
-	 * reads the data
+	 * This method reads the data in the files that assigns each saved person to a
+	 * particular machine learning index.
 	 */
 	private void readNameMapData() {
 		BufferedReader br;
@@ -582,22 +584,24 @@ public class Attendance extends WebCam {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-	
-	void showHelp() {
+
+	/**
+	 * This method represents the help message that displays on the window to help
+	 * users understand how to take attendance.
+	 */
+	private void showHelp() {
 		String msg = "<html><h1>Attendence Panel</h1>Before you take the attendence, please make sure that "
-			+   " at least two students have taken their pictures in <b>Photoshoot Panel</b>. A "
-			+   "student can not be recognized if his/her picture is not available. <h2>Steps to take attendence are:</h2><ul>"
-			+	"<li>Select the classroom in ComboBox.</li>"
-			+	"<li>Make sure that <b>Absent Student</b> list shows all students in the classroom.</li>"
-			+	"<li>Start the attendence by click <b>Start</b> button.</li>"
-			+	"<li>During attendence, make sure that recognized students are moved to <b>Present Students</b> list.</li>"
-			+	"<li>Once the attendence is over, click <b>Stop</b> to stop the attendence.</li>"
-			+	"<li>Save the attendence for the day by click the <b>Save</b> button.</li>"
-			+	"<li>You can also reset the attendence by click <b>Reset</b> button.</li>"
-			+ "</ul><body></body></html>";
+				+ " at least two students have taken their pictures in <b>Photoshoot Panel</b>. A "
+				+ "student can not be recognized if his/her picture is not available. <h2>Steps to take attendence are:</h2><ul>"
+				+ "<li>Select the classroom in ComboBox.</li>"
+				+ "<li>Make sure that <b>Absent Student</b> list shows all students in the classroom.</li>"
+				+ "<li>Start the attendence by click <b>Start</b> button.</li>"
+				+ "<li>During attendence, make sure that recognized students are moved to <b>Present Students</b> list.</li>"
+				+ "<li>Once the attendence is over, click <b>Stop</b> to stop the attendence.</li>"
+				+ "<li>Save the attendence for the day by click the <b>Save</b> button.</li>"
+				+ "<li>You can also reset the attendence by click <b>Reset</b> button.</li>"
+				+ "</ul><body></body></html>";
 		JOptionPane.showMessageDialog(null, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
-
 }

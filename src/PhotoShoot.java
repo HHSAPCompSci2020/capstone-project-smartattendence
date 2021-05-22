@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -33,53 +34,58 @@ import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
- * This class represents the PhotoShoot panel of the window
- * and uses the webcam to add new students
+ * This class represents the PhotoShoot panel of the window and uses the WebCam.
+ * It adds images of new/existing students to the machine learning models.
+ * 
  * @author Arya Khokhar
- * @version 2
- *
+ * @version 6
  */
 public class PhotoShoot extends WebCam {
-	final static int GRID_WIDTH = 4;
-	final static int GRID_HEIGHT = 4;
-	final static int GRID_SIZE = GRID_WIDTH*GRID_HEIGHT;
+	private final static int GRID_WIDTH = 4;
+	private final static int GRID_HEIGHT = 4;
+	private final static int GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 
-	static JLabel[] jlabels = new JLabel[GRID_SIZE];
-	static JComboBox[] textLabels = new JComboBox[GRID_SIZE];
-	static Mat[] faceImages = new Mat[GRID_SIZE];
-	static boolean snapped = false;
-	static JButton snapButton = new JButton("Take Picture");
-	static JButton saveButton = new JButton("Save Picture");
-    boolean capturing = false;
-    boolean startFaceDetect = false;
-    
+	private static JLabel[] jlabels = new JLabel[GRID_SIZE];
+	private static JComboBox[] textLabels = new JComboBox[GRID_SIZE];
+	private static Mat[] faceImages = new Mat[GRID_SIZE];
+	private static boolean snapped = false;
+	private static JButton snapButton = new JButton("Take Picture");
+	private static JButton saveButton = new JButton("Save Picture");
+	private boolean capturing = false;
+	private boolean startFaceDetect = false;
+
 	private SQLiteManager sqlManager;
 
-    
-	List<Student> allStudents;
-	
-	PhotoShoot(String dataDir, SQLiteManager sqlManager) {
+	private List<Student> allStudents;
+
+	/**
+	 * This constructor creates the files in the faces folder for machine learning
+	 * and sets up the GUI components of the panel. It also contains the code for
+	 * what to do when each button is pressed, including saving the images to the
+	 * database.
+	 * 
+	 * @param dataDir    is the path to the directory that is passes to WebCam
+	 * @param sqlManager is the database object
+	 */
+	public PhotoShoot(String dataDir, SQLiteManager sqlManager) {
 		super(dataDir);
 		this.sqlManager = sqlManager;
-		
 
 		setLayout(new GridBagLayout());
-        vidpanel = new JLabel("     Pleae wait while video is loading...");
-	    vidpanel.setPreferredSize(new Dimension(600, 300));
-	    
+		vidpanel = new JLabel("     Pleae wait while video is loading...");
+		vidpanel.setPreferredSize(new Dimension(600, 300));
+
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-	    add(vidpanel, gbc);
-         
-        JPanel iconPanel = new JPanel();
-        iconPanel.setLayout(new GridLayout(GRID_WIDTH, GRID_HEIGHT));
-        snapButton.addActionListener(new ActionListener() {
+		add(vidpanel, gbc);
+
+		snapButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for(int i = 1; i < GRID_SIZE; ++i) {
+				for (int i = 0; i < GRID_SIZE; ++i) {
 					jlabels[i].setIcon(null);
 					textLabels[i].setSelectedIndex(0);
 					faceImages[i] = null;
@@ -88,17 +94,17 @@ public class PhotoShoot extends WebCam {
 				saveButton.setEnabled(true);
 			}
 		});
-        
-        saveButton.addActionListener(new ActionListener() {
+
+		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				for(int i = 1; i < GRID_SIZE; ++i) {
+				for (int i = 0; i < GRID_SIZE; ++i) {
 					if (faceImages[i] != null && textLabels[i] != null) {
 						int index = textLabels[i].getSelectedIndex();
 						if (index == 0) {
 							continue;
 						}
-						Student student = allStudents.get(index-1);
+						Student student = allStudents.get(index - 1);
 						String imageName = student.getName() + "__" + student.getID();
 						if (imageName != null && imageName.trim().length() > 0) {
 							imageName = imageName.trim().toLowerCase();
@@ -115,37 +121,50 @@ public class PhotoShoot extends WebCam {
 				}
 			}
 		});
-        
-        saveButton.setEnabled(false);
-        
-        JPanel cmdPanel = new JPanel();
-        cmdPanel.setLayout(new GridLayout(4, 1));
-        cmdPanel.add(snapButton);
-        cmdPanel.add(saveButton);
 
-    	iconPanel.add(cmdPanel);
-    	
-        for(int i = 1; i < GRID_SIZE; ++i) {
-        	JLabel l = new JLabel();
-        	l.setPreferredSize(new Dimension(92, 112));
-        	jlabels[i] = l;
-            JPanel imagePanel = new JPanel();
-            imagePanel.setLayout(new BorderLayout());
-            imagePanel.add(l, BorderLayout.NORTH);
-            textLabels[i] = new JComboBox<String>();
-            textLabels[i].setEditable(true);
+		saveButton.setEnabled(false);
 
-            imagePanel.add(textLabels[i], BorderLayout.SOUTH);
-        	iconPanel.add(imagePanel);
-        }
-        
+		JPanel cmdPanel = new JPanel();
+		cmdPanel.setLayout(new GridLayout(1, 2));
+		cmdPanel.add(snapButton);
+		cmdPanel.add(saveButton);
+
+		JPanel rightPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0;
+		c.gridx = 0;
+		c.gridy = 0;
+		rightPanel.add(cmdPanel, c);
+
+		JPanel iconPanel = new JPanel();
+		iconPanel.setLayout(new GridLayout(GRID_WIDTH, GRID_HEIGHT));
+
+		for (int i = 0; i < GRID_SIZE; ++i) {
+			JLabel l = new JLabel();
+			l.setPreferredSize(new Dimension(92, 112));
+			jlabels[i] = l;
+			JPanel imagePanel = new JPanel();
+			imagePanel.setLayout(new BorderLayout());
+			imagePanel.add(l, BorderLayout.NORTH);
+			textLabels[i] = new JComboBox<String>();
+			textLabels[i].setEditable(true);
+
+			imagePanel.add(textLabels[i], BorderLayout.SOUTH);
+			iconPanel.add(imagePanel);
+		}
+
+		c.gridy = 1;
+		c.insets = new Insets(50, 0, 0, 0);
+		rightPanel.add(iconPanel, c);
+
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 1;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.EAST;
 
-		add(iconPanel, gbc);
+		add(rightPanel, gbc);
 
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.weightx = 0;
@@ -153,12 +172,12 @@ public class PhotoShoot extends WebCam {
 		gbc.gridx = 2;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.NORTH;
-		
+
 		JButton helpButton = new JButton("Help");
 		helpButton.setBackground(Color.GREEN);
 		helpButton.setOpaque(true);
 		add(helpButton, gbc);
-		
+
 		helpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -168,148 +187,78 @@ public class PhotoShoot extends WebCam {
 	}
 
 	/**
-	 * This method adds the new face
+	 * This method processes the faces from the camera and adds them to the machine
+	 * learning files.
+	 * 
+	 * @param index     number of faces
+	 * @param grayFrame matrix of image
+	 * @param rect      rectangular coordinates containing face in frame
 	 */
 	public void processFaceRect(int index, Mat grayFrame, Rect rect) {
-		
+
 		if (index == -1 && startFaceDetect == false) {
 			startFaceDetect = true;
 			return;
 		}
-		
+
 		if (index == -2) {
 			startFaceDetect = false;
 			snapped = false;
 			return;
 		}
-		
+
 		Mat resized = getResizedImage(grayFrame, rect);
 
 		if (snapped) {
 			System.out.println("taking picture " + index);
-			Image scaledImage = Mat2BufferedImage(resized).getScaledInstance(jlabels[index+1].getWidth(),
-				-1, Image.SCALE_FAST);
-			jlabels[index+1].setIcon(new ImageIcon(scaledImage));
-			faceImages[index+1] = resized;
+			Image scaledImage = Mat2BufferedImage(resized).getScaledInstance(jlabels[index].getWidth(), -1,
+					Image.SCALE_FAST);
+			jlabels[index].setIcon(new ImageIcon(scaledImage));
+			faceImages[index] = resized;
 		}
 
 	}
-	
+
 	/**
-	 * This method starts the camera
+	 * This method starts the camera and also is responsible for the
+	 * grid of assigning names to images on the right of the panel.
 	 */
 	public void startCapture() {
 		startFaceDetect = false;
 		snapped = false;
 		allStudents = sqlManager.getAllStudents();
 
-        for(int i = 1; i < GRID_SIZE; ++i) {
-        	DefaultComboBoxModel<String> studentListModel = new DefaultComboBoxModel<String>();
-        	if (allStudents != null) {
-        		studentListModel.addElement("--select--");
-        		for(Student student : allStudents) {
-        			studentListModel.addElement(student.getName());
-        		}
-        	}
-        	textLabels[i].setModel(studentListModel);
-        	AutoCompleteDecorator.decorate(textLabels[i]);
-        }
+		for (int i = 0; i < GRID_SIZE; ++i) {
+			DefaultComboBoxModel<String> studentListModel = new DefaultComboBoxModel<String>();
+			if (allStudents != null) {
+				studentListModel.addElement("--select--");
+				for (Student student : allStudents) {
+					studentListModel.addElement(student.getName());
+				}
+			}
+			textLabels[i].setModel(studentListModel);
+			AutoCompleteDecorator.decorate(textLabels[i]);
+		}
 
 		super.startCapture();
 	}
 
 	/**
-	 * This method stops the camera
+	 * This method stops the camera.
 	 */
 	public void stopCapture() {
 		startFaceDetect = false;
 		snapped = false;
 		super.stopCapture();
-	}	
-
-	
-	/**
-	 * This method detects any faces within the camera.
-	 * @param frame video frame in which face needs to be detected
-	 * @param isSnapped denotes mode of operation detection versus recognition
-	 * @throws IOException throws exception is error occurs during processing
-	 */
-	public void detectFace(Mat frame, boolean isSnapped) throws IOException
-	{
-		RectVector faces = new RectVector();
-		Mat grayFrame = new Mat();
-		int absoluteFaceSize=0;
-		CascadeClassifier faceCascade = new CascadeClassifier();
-		
-		faceCascade.load(classifierPath);
-		opencv_imgproc.cvtColor(frame, grayFrame, COLOR_BGR2GRAY);
-		opencv_imgproc.equalizeHist(grayFrame, grayFrame);
-		
-		int height = grayFrame.rows();
-		if (Math.round(height * 0.2f) > 0) {
-			absoluteFaceSize = Math.round(height * 0.1f);
-		}
-				
-		faceCascade.detectMultiScale(grayFrame, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE,
-				new Size(absoluteFaceSize, absoluteFaceSize), new Size(height,height));
-				
-		Rect[] facesArray = faces.get();
-		for (int i = 0; i < facesArray.length; i++) {
-			opencv_imgproc.rectangle(frame, facesArray[i], new Scalar(0, 255, 0, 255), 3, 1, 0);
-			if (!isSnapped) {
-				continue;
-			}
-			Rect rect = facesArray[i];
-			Rect newRect = new Rect();
-			if (rect.width()*112/92 > rect.height()) {
-				newRect.width(rect.width());
-				newRect.x(rect.x());
-				newRect.height(rect.width() * 112 / 92);
-				newRect.y(rect.y() - (newRect.height() - rect.height())/2);
-				if (newRect.y() < 0) {
-					newRect.y(0);
-				}
-				if (frame.arrayHeight() < newRect.y() + newRect.height()) {
-					newRect.y(frame.arrayHeight() - newRect.height() - 1);
-					if (newRect.y() < 0) {
-						continue;
-					}
-				}
-			} else {
-				newRect.height(rect.height());
-				newRect.y(rect.y());
-				newRect.width(rect.height() * 92 / 112);
-				newRect.x(rect.x() - (newRect.width() - rect.width())/2);
-				if (newRect.x() < 0) {
-					newRect.x(0);
-				}
-			}
-			
-			try {
-				Mat cropped = new Mat(grayFrame, newRect);
-				Size sz = new Size(92,112);
-				Mat resized = new Mat();
-				opencv_imgproc.resize(cropped, resized, sz);
-				if (snapped){
-					Image scaledImage = Mat2BufferedImage(resized).getScaledInstance(jlabels[i+1].getWidth(),
-	            		-1, Image.SCALE_FAST);
-					jlabels[i+1].setIcon(new ImageIcon(scaledImage));
-					faceImages[i+1] = resized;
-				}
-			} catch (Exception e) {
-				System.out.println(frame.size() + " [" + rect.x() + ", " + rect.y()
-				+ "], "+ " [" + newRect.x() + ", " + newRect.y() + "] " + newRect.size());
-				e.printStackTrace();
-			}
-		}
-		faceCascade.close();
 	}
-	
-	void showHelp() {
+
+	/**
+	 * This method represents the message displayed when a user clicks
+	 * on the help button and walks them through how to use the panel.
+	 */
+	private void showHelp() {
 		String msg = "<html><body><h1>PhotoShoot Panel</h1>Take pictures and tag them with a student name."
-			+ "<h2>Steps to take pictures are: </h2><ul>"
-			+ "<li></li>"
-			+ "</ul></body></html>";
+				+ "<h2>Steps to take pictures are: </h2><ul>" + "<li></li>" + "</ul></body></html>";
 		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 }

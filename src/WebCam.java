@@ -20,39 +20,44 @@ import org.bytedeco.opencv.opencv_core.Size;
 import org.bytedeco.opencv.opencv_objdetect.CascadeClassifier;
 import org.bytedeco.opencv.opencv_videoio.VideoCapture;
 
-/** 
- * this is the class that allows the program to access the computer camra
+/**
+ * This class is extends JPanel and is responsible for the video camera feed in
+ * different tabs of the window.
+ * 
  * @author Arya Khokhar
- *
+ * @version 6
  */
 public class WebCam extends JPanel {
 
-	public String classifierPath;
+	protected String classifierPath;
+	protected String dataDir;
 
-    String dataDir;
-    boolean capturing = false;
-    JLabel vidpanel;
-	
-	WebCam(String dataDir) {
+	private boolean capturing = false;
+	protected JLabel vidpanel;
+
+	/**
+	 * This constructor sets the string parameter as the path to the resources
+	 * folder where the machine learning data is stored.
+	 * 
+	 * @param dataDir is the location of the resource folder
+	 */
+	public WebCam(String dataDir) {
 		super(false);
 		this.dataDir = dataDir;
-
 		classifierPath = Paths.get(dataDir, "classifiers", "haarcascade_frontalface_alt.xml").toString();
-		
-		System.out.println("datadir=" + dataDir);
-		System.out.println("classifierPath=" + classifierPath);
 	}
+
 	/**
-	 * starts the video capture
+	 * This method represents the camera. It processing the frames from the JPanel
+	 * and updates the live feed.
 	 */
 	public void startCapture() {
-		
+
 		Runnable cameraTask = new Runnable() {
 			@Override
 			public void run() {
 				Mat frame = new Mat();
 				VideoCapture camera = new VideoCapture(0);
-				System.out.println("Starting video capture");
 
 				capturing = true;
 				while (capturing) {
@@ -65,55 +70,53 @@ public class WebCam extends JPanel {
 
 						if (vidpanel != null) {
 							Image scaledImage = Mat2BufferedImage(frame).getScaledInstance(vidpanel.getWidth(), -1,
-								Image.SCALE_FAST);
+									Image.SCALE_FAST);
 
 							vidpanel.setIcon(new ImageIcon(scaledImage));
 						}
-
 					}
 				}
-				
+
 				camera.close();
 				capturing = false;
-				System.out.println("Stopped video capture");
 			}
 		};
-		
+
 		new Thread(cameraTask).start();
 
 	}
+
 	/**
-	 * stops the video capture
+	 * This method stops the camera feed.
 	 */
 	public void stopCapture() {
-		System.out.println("Stopping video capture");
 		capturing = false;
 	}
-	
+
 	/**
 	 * This method detects any faces within the camera.
-	 * @param frame image frame to look into
+	 * 
+	 * @param frame matrix that represents an image
 	 * @throws IOException throws exception if error occurs during processing
 	 */
-	public void processFrame(Mat frame) throws IOException
-	{
+	public void processFrame(Mat frame) throws IOException {
 		RectVector faces = new RectVector();
 		Mat grayFrame = new Mat();
-		int absoluteFaceSize=0;
+		int absoluteFaceSize = 0;
 		CascadeClassifier faceCascade = new CascadeClassifier();
-		
+
 		faceCascade.load(classifierPath);
 		opencv_imgproc.cvtColor(frame, grayFrame, COLOR_BGR2GRAY);
 		opencv_imgproc.equalizeHist(grayFrame, grayFrame);
-		
+
 		int height = grayFrame.rows();
 		if (Math.round(height * 0.2f) > 0) {
 			absoluteFaceSize = Math.round(height * 0.1f);
 		}
-				
+
 		faceCascade.detectMultiScale(grayFrame, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE,
-				new Size(absoluteFaceSize, absoluteFaceSize), new Size(height,height));
-				
+				new Size(absoluteFaceSize, absoluteFaceSize), new Size(height, height));
+
 		Rect[] facesArray = faces.get();
 		processFaceRect(-1, null, null);
 		for (int i = 0; i < facesArray.length; i++) {
@@ -124,22 +127,33 @@ public class WebCam extends JPanel {
 		processFaceRect(-2, null, null);
 		faceCascade.close();
 	}
+
 	/**
-	 * This method processes the faces from the camera and adds them
+	 * This method processes the faces from the camera and adds them. It is
+	 * overridden in its subclasses.
+	 * 
 	 * @param index number of faces
 	 * @param frame matrix of image
-	 * @param rect rectangular coordinates containing face in frame
+	 * @param rect  rectangular coordinates containing face in frame
 	 */
 	public void processFaceRect(int index, Mat frame, Rect rect) {
 	}
-	
+
+	/**
+	 * This resizes the image from a square to a rectangle after it has been
+	 * detected.
+	 * 
+	 * @param grayFrame image to be manipulated
+	 * @param rect      is the rectangle that fits around the image
+	 * @return matrix with new dimensions
+	 */
 	public Mat getResizedImage(Mat grayFrame, Rect rect) {
 		Rect newRect = new Rect();
-		if (rect.width()*112/92 > rect.height()) {
+		if (rect.width() * 112 / 92 > rect.height()) {
 			newRect.width(rect.width());
 			newRect.x(rect.x());
 			newRect.height(rect.width() * 112 / 92);
-			newRect.y(rect.y() - (newRect.height() - rect.height())/2);
+			newRect.y(rect.y() - (newRect.height() - rect.height()) / 2);
 			if (newRect.y() < 0) {
 				newRect.y(0);
 			}
@@ -153,28 +167,29 @@ public class WebCam extends JPanel {
 			newRect.height(rect.height());
 			newRect.y(rect.y());
 			newRect.width(rect.height() * 92 / 112);
-			newRect.x(rect.x() - (newRect.width() - rect.width())/2);
+			newRect.x(rect.x() - (newRect.width() - rect.width()) / 2);
 			if (newRect.x() < 0) {
 				newRect.x(0);
 			}
 		}
-		
+
 		Mat cropped = new Mat(grayFrame, newRect);
-		
-		Size sz = new Size(92,112);
+
+		Size sz = new Size(92, 112);
 		Mat resized = new Mat();
 		opencv_imgproc.resize(cropped, resized, sz);
 
 		return resized;
 	}
-	
-	
 
 	/**
+	 * This method converts the image from a matrix to a buffered image for better
+	 * processing.
+	 * 
 	 * @param m Converts Mat m to BufferedImage data type
 	 * @return a BufferedImage equivalent of parameter m
 	 */
-    public BufferedImage Mat2BufferedImage(Mat m){
+	public BufferedImage Mat2BufferedImage(Mat m) {
 
 		int type = BufferedImage.TYPE_BYTE_GRAY;
 		if (m.channels() > 1) {
@@ -187,24 +202,25 @@ public class WebCam extends JPanel {
 		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		System.arraycopy(b, 0, targetPixels, 0, b.length);
 		return image;
-    }
-    
+	}
+
 	/**
-	 * saves the image
+	 * This method saves the image under the given name in the resources folder.
+	 * 
 	 * @param imageName the file name to be created containing the image in m.
-	 * @param mat the image to be saved
+	 * @param mat       the image to be saved
 	 */
 	public void saveImageFile(String imageName, Mat mat) {
 		File faceDataDir = new File(dataDir + File.separator + "faces");
-		if (!faceDataDir.exists()){
+		if (!faceDataDir.exists()) {
 			faceDataDir.mkdir();
 		}
-		
+
 		File nameDir = new File(faceDataDir, imageName);
 		if (!nameDir.exists()) {
 			nameDir.mkdir();
 		}
-		
+
 		int seq = 1;
 		File imgFile = null;
 		while (seq < 100) {
@@ -218,7 +234,5 @@ public class WebCam extends JPanel {
 		if (imgFile != null) {
 			opencv_imgcodecs.imwrite(imgFile.getAbsolutePath(), mat);
 		}
-		
 	}
-	
 }

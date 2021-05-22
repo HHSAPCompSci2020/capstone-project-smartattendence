@@ -2,8 +2,9 @@ import java.util.ArrayList;
 
 /**
  * This is the School class, where it will contain Classroom
- * @author Xinyu Zhao 
- * @version 2
+ * 
+ * @author Xinyu Zhao
+ * @version 3
  */
 public class School {
 
@@ -11,6 +12,7 @@ public class School {
 
 	/**
 	 * creates a new School
+	 * 
 	 * @pre cannot have two classes with the same name
 	 */
 	public School() {
@@ -19,6 +21,7 @@ public class School {
 
 	/**
 	 * creates a new school
+	 * 
 	 * @pre cannot have two classes with the same name
 	 * @param input a input list of classes.
 	 */
