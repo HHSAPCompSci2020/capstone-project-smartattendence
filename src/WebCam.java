@@ -26,9 +26,6 @@ import org.bytedeco.opencv.opencv_videoio.VideoCapture;
  *
  */
 public class WebCam extends JPanel {
-	final static int GRID_WIDTH = 4;
-	final static int GRID_HEIGHT = 4;
-	final static int GRID_SIZE = GRID_WIDTH*GRID_HEIGHT;
 
 	public String classifierPath;
 

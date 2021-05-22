@@ -285,7 +285,7 @@ public class Attendance extends WebCam {
 		super.startCapture();
 	}
 	
-	void updateStudentAndClasses() {
+	public void updateStudentAndClasses() {
 		allClasses = sqlManager.getAllClassrooms();
 		if (classroomIndex == -1 && allClasses != null && allClasses.size() > 0) {
 			classroomIndex = 0;

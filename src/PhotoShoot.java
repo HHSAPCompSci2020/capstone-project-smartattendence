@@ -52,9 +52,9 @@ public class PhotoShoot extends WebCam {
 	private SQLiteManager sqlManager;
 
     
-	List<Student> allStudents;
+	private List<Student> allStudents;
 	
-	PhotoShoot(String dataDir, SQLiteManager sqlManager) {
+	public PhotoShoot(String dataDir, SQLiteManager sqlManager) {
 		super(dataDir);
 		this.sqlManager = sqlManager;
 		
@@ -192,82 +192,4 @@ public class PhotoShoot extends WebCam {
 		snapped = false;
 		super.stopCapture();
 	}	
-
-	
-	/**
-	 * This method detects any faces within the camera.
-	 * @param frame video frame in which face needs to be detected
-	 * @param isSnapped denotes mode of operation detection versus recognition
-	 * @throws IOException throws exception is error occurs during processing
-	 */
-	public void detectFace(Mat frame, boolean isSnapped) throws IOException
-	{
-		RectVector faces = new RectVector();
-		Mat grayFrame = new Mat();
-		int absoluteFaceSize=0;
-		CascadeClassifier faceCascade = new CascadeClassifier();
-		
-		faceCascade.load(classifierPath);
-		opencv_imgproc.cvtColor(frame, grayFrame, COLOR_BGR2GRAY);
-		opencv_imgproc.equalizeHist(grayFrame, grayFrame);
-		
-		int height = grayFrame.rows();
-		if (Math.round(height * 0.2f) > 0) {
-			absoluteFaceSize = Math.round(height * 0.1f);
-		}
-				
-		faceCascade.detectMultiScale(grayFrame, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE,
-				new Size(absoluteFaceSize, absoluteFaceSize), new Size(height,height));
-				
-		Rect[] facesArray = faces.get();
-		for (int i = 0; i < facesArray.length; i++) {
-			opencv_imgproc.rectangle(frame, facesArray[i], new Scalar(0, 255, 0, 255), 3, 1, 0);
-			if (!isSnapped) {
-				continue;
-			}
-			Rect rect = facesArray[i];
-			Rect newRect = new Rect();
-			if (rect.width()*112/92 > rect.height()) {
-				newRect.width(rect.width());
-				newRect.x(rect.x());
-				newRect.height(rect.width() * 112 / 92);
-				newRect.y(rect.y() - (newRect.height() - rect.height())/2);
-				if (newRect.y() < 0) {
-					newRect.y(0);
-				}
-				if (frame.arrayHeight() < newRect.y() + newRect.height()) {
-					newRect.y(frame.arrayHeight() - newRect.height() - 1);
-					if (newRect.y() < 0) {
-						continue;
-					}
-				}
-			} else {
-				newRect.height(rect.height());
-				newRect.y(rect.y());
-				newRect.width(rect.height() * 92 / 112);
-				newRect.x(rect.x() - (newRect.width() - rect.width())/2);
-				if (newRect.x() < 0) {
-					newRect.x(0);
-				}
-			}
-			
-			try {
-				Mat cropped = new Mat(grayFrame, newRect);
-				Size sz = new Size(92,112);
-				Mat resized = new Mat();
-				opencv_imgproc.resize(cropped, resized, sz);
-				if (snapped){
-					Image scaledImage = Mat2BufferedImage(resized).getScaledInstance(jlabels[i+1].getWidth(),
-	            		-1, Image.SCALE_FAST);
-					jlabels[i+1].setIcon(new ImageIcon(scaledImage));
-					faceImages[i+1] = resized;
-				}
-			} catch (Exception e) {
-				System.out.println(frame.size() + " [" + rect.x() + ", " + rect.y()
-				+ "], "+ " [" + newRect.x() + ", " + newRect.y() + "] " + newRect.size());
-				e.printStackTrace();
-			}
-		}
-		faceCascade.close();
-	}
 }
