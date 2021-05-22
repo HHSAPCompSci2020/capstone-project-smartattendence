@@ -1,10 +1,10 @@
 import java.awt.Image;
 
 /**
- * This class represent a Student.
- * @author xinyu zhao
- * @version 3
- *
+ * This class represents a Student.
+ * 
+ * @author Xinyu Zhao
+ * @version 5
  */
 public class Student {
 
@@ -12,18 +12,22 @@ public class Student {
 	private final String STUDENT_NAME;
 	private boolean attendance = false;
 	private int grade;
-/**
- * creates a Student, defult set the id to 0 and name to ""
- */
+
+	/**
+	 * This default constructor creates a Student and sets the ID to 0 and the name
+	 * to an empty string.
+	 */
 	public Student() {
 		STUDENT_ID = 0;
 		STUDENT_NAME = "";
 	}
-/**
- * creates a student with id and name
- * @param id the student's Id number
- * @param name the student's name
- */
+
+	/**
+	 * This constructor creates a student with a given ID and name.
+	 * 
+	 * @param id   the student's ID number
+	 * @param name the student's name
+	 */
 	public Student(int id, String name) {
 		STUDENT_ID = id;
 		STUDENT_NAME = name;
@@ -31,7 +35,8 @@ public class Student {
 
 	/**
 	 * This method returns the ID of the student
-	 * @return the student's id number
+	 * 
+	 * @return the student's ID number
 	 */
 	public int getID() {
 		return STUDENT_ID;
@@ -39,35 +44,38 @@ public class Student {
 
 	/**
 	 * This method return the name of the student
-	 * @return the name of the student. 
+	 * 
+	 * @return the name of the student.
 	 */
 	public String getName() {
 		return STUDENT_NAME;
 	}
 
 	/**
-	 * This method returns the attendence of the student on a given day
+	 * This method returns the attendance of the student on a given day
+	 * 
 	 * @return true is student was present and false is they were absent
 	 */
-	public boolean getAttendance(){
+	public boolean getAttendance() {
 		return attendance;
 	}
 
-/**
- * this method returns the grade the student is in.
- * @return and int of the grade student is in
- */
+	/**
+	 * This method returns the grade the student is in.
+	 * 
+	 * @return the grade student is in
+	 */
 	public int getGrade() {
 		return grade;
 	}
-/**
- * this method sets the grade of the student.
- * @param grade the grade number you want to set to
- */
 
+	/**
+	 * This method sets the grade of the student.
+	 * 
+	 * @param grade the grade number you want to set to
+	 */
 	public void setGrade(int grade) {
 		this.grade = grade;
 	}
-
 
 }

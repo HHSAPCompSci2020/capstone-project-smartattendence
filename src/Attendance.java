@@ -154,6 +154,12 @@ public class Attendance extends WebCam {
 						listAbsentModel.addElement(student.getName());
 					}
 				}
+				try {
+					createTrainingList();
+					train();
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
 			}
 
 		});
@@ -265,7 +271,7 @@ public class Attendance extends WebCam {
 
 	/**
 	 * This method processes the faces from the camera and adds them to the machine
-	 * learning files. It overrides the method in its superclass. 
+	 * learning files. It overrides the method in its superclass.
 	 * 
 	 * @param index     number of faces
 	 * @param grayFrame matrix of image
@@ -313,7 +319,8 @@ public class Attendance extends WebCam {
 			createTrainingList();
 			train();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(
+					"Some students in class do not have photos attached. Please go to PhotoShoot to add them.");
 		}
 		super.startCapture();
 	}
@@ -459,15 +466,23 @@ public class Attendance extends WebCam {
 
 		efr.predict(mat, outLabel, outConf);
 		String efrName = nameMap.get(outLabel[0]);
+		double conf1 = outConf[0];
+
 		ffr.predict(mat, outLabel, outConf);
 		String ffrName = nameMap.get(outLabel[0]);
+		double conf2 = outConf[0];
+
 		lfr.predict(mat, outLabel, outConf);
 		String lfrName = nameMap.get(outLabel[0]);
+		double conf3 = outConf[0];
 
 		if (efrName != null && efrName.contentEquals(ffrName) && efrName.equals(lfrName)) {
-			System.out.println("Found: " + efrName + "    " + count++);
+			if (conf1 < 5000 && conf2 < 400 && conf3 < 100) {
+				System.out.println("Found: " + efrName + ", " + conf1 + ", " + conf2 + "," + conf3 + "    " + count++);
+				return nameMap.get(outLabel[0]);
+			}
 		}
-		return nameMap.get(outLabel[0]);
+		return null;
 	}
 
 	/**

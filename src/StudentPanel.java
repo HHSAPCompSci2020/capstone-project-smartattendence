@@ -21,53 +21,62 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 /**
- * This is the class that creates a Student tab on the GUI
- * @author Arya Khokhar
- * @version 4
+ * This is the class that represents a Student tab on the GUI.
+ * 
+ * @author Xinyu Zhao
+ * @version 6
  */
 public class StudentPanel extends JPanel {
-	List<Student> allStudents;
-	DefaultListModel<String> studentListModel;
-	JList<String> studentList;
-	
+	private List<Student> allStudents;
+	private DefaultListModel<String> studentListModel;
+	private JList<String> studentList;
+
 	private SQLiteManager sqlManager;
 	private String dataDir;
 
-	List<Student> classStudents;
-	DefaultListModel<String> classStudentListModel;
-	JList<String> classStudentList;
+	private List<Student> classStudents;
+	private DefaultListModel<String> classStudentListModel;
+	private JList<String> classStudentList;
 
-	List<Classroom> allClassrooms;
-	DefaultListModel<String> classroomListModel;
-	JList<String> classroomList;
+	private List<Classroom> allClassrooms;
+	private DefaultListModel<String> classroomListModel;
+	private JList<String> classroomList;
 
-	static JButton addStudentButton = new JButton("Add Student");
-	static JButton editStudentButton = new JButton("Edit Student");
-	static JButton deleteStudentButton = new JButton("Delete Student");
+	private static JButton addStudentButton = new JButton("Add Student");
+	private static JButton editStudentButton = new JButton("Edit Student");
+	private static JButton deleteStudentButton = new JButton("Delete Student");
 
-	static JButton addStudentToClassroom = new JButton("Add to Classroom");
-	static JButton removeStudentFromClassroom = new JButton("Remove from Classroom");
+	private static JButton addStudentToClassroom = new JButton("Add to Classroom");
+	private static JButton removeStudentFromClassroom = new JButton("Remove from Classroom");
 
-	static JButton addClassroomButton = new JButton("Add Classroom");
-	static JButton editClassroomButton = new JButton("Edit Classroom");
-	static JButton deleteClassroomButton = new JButton("Delete Classroom");
+	private static JButton addClassroomButton = new JButton("Add Classroom");
+	private static JButton editClassroomButton = new JButton("Edit Classroom");
+	private static JButton deleteClassroomButton = new JButton("Delete Classroom");
 
+	/**
+	 * This constructor sets up the basic GUI for the panel.
+	 * 
+	 * @param dataDir    is the path to the resource folder
+	 * @param sqlManager is the database
+	 */
 	public StudentPanel(String dataDir, SQLiteManager sqlManager) {
 		this.dataDir = dataDir;
 		this.sqlManager = sqlManager;
-		
+
 		setLayout(new GridBagLayout());
 
 		addClassrooms();
 		addClassStudents();
 		addStudents();
 	}
+
 	/**
-	 * this method can modify Classrooms based on what buttons are pressed
-	 * add a new classroom, edit a selected, or remove
+	 * This method can modify Classrooms based on what buttons are pressed and add a
+	 * new classroom, edit a selected, or remove a classroom.
 	 */
-	void addClassrooms() {
+	public void addClassrooms() {
 		allClassrooms = sqlManager.getAllClassrooms();
 
 		JPanel cmdPanel = new JPanel();
@@ -78,37 +87,37 @@ public class StudentPanel extends JPanel {
 
 		classroomListModel = new DefaultListModel<String>();
 		if (allClassrooms != null) {
-			for(Classroom classroom : allClassrooms) {
+			for (Classroom classroom : allClassrooms) {
 				classroomListModel.addElement(classroom.getCourseName());
 			}
 		}
 		classroomList = new JList<String>(classroomListModel);
-		
+
 		classroomList.addListSelectionListener(new ListSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-    				int i = classroomList.getSelectedIndex();
-    				if (i < 0 ) {
-    					return;
-    				}
-                    Classroom classroom = allClassrooms.get(i);
-            		List<Integer> studentIds = sqlManager.getStudentsInClassroom(classroom.getId());
-            		classStudentListModel.clear();
-            		classStudents = new ArrayList<Student>();
-            		if (studentIds == null) {
-            			return;
-            		}
-            		for(Integer studentId : studentIds) {
-            			Student student = sqlManager.getStudent(studentId);
-            			classStudents.add(student);
-            			classStudentListModel.addElement(student.getName());
-            		}
-                  }
+				if (!e.getValueIsAdjusting()) {
+					int i = classroomList.getSelectedIndex();
+					if (i < 0) {
+						return;
+					}
+					Classroom classroom = allClassrooms.get(i);
+					List<Integer> studentIds = sqlManager.getStudentsInClassroom(classroom.getId());
+					classStudentListModel.clear();
+					classStudents = new ArrayList<Student>();
+					if (studentIds == null) {
+						return;
+					}
+					for (Integer studentId : studentIds) {
+						Student student = sqlManager.getStudent(studentId);
+						classStudents.add(student);
+						classStudentListModel.addElement(student.getName());
+					}
+				}
 			}
 		});
-		
+
 		addClassroomButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -125,7 +134,7 @@ public class StudentPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = classroomList.getSelectedIndex();
-				if (i < 0 ) {
+				if (i < 0) {
 					return;
 				}
 				Classroom classroom = allClassrooms.get(i);
@@ -141,7 +150,7 @@ public class StudentPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = classroomList.getSelectedIndex();
-				if (i < 0 ) {
+				if (i < 0) {
 					return;
 				}
 				Classroom classroom = allClassrooms.get(i);
@@ -150,11 +159,11 @@ public class StudentPanel extends JPanel {
 					allClassrooms.remove(i);
 					classStudents.clear();
 					classStudentListModel.clear();
-				}
-				
-				// delete all students from the classroom
-				for(Student student: allStudents) {
-					sqlManager.deleteStudentFromClassroom(student.getID(), classroom.getId());
+
+					// delete all students from the classroom
+					for (Student student : allStudents) {
+						sqlManager.deleteStudentFromClassroom(student.getID(), classroom.getId());
+					}
 				}
 			}
 		});
@@ -163,7 +172,7 @@ public class StudentPanel extends JPanel {
 		classroomList.setLayoutOrientation(JList.VERTICAL);
 		classroomList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(classroomList);
-		listScroller.setBorder(BorderFactory.createTitledBorder ("Classrooms"));
+		listScroller.setBorder(BorderFactory.createTitledBorder("Classrooms"));
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -176,15 +185,17 @@ public class StudentPanel extends JPanel {
 
 		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.weighty = 1.0;
-		gbc.weightx = 1;
+		gbc.weightx = 1.0;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		add(listScroller, gbc);
 	}
+
 	/**
-	 * this method modifies Students in a class based on what buttons are pressed
+	 * This method adds or removes a student into or from a class based on what
+	 * button is pressed and which class and student is selected.
 	 */
-	void addClassStudents() {
+	public void addClassStudents() {
 		JPanel cmdPanel = new JPanel();
 		cmdPanel.setLayout(new GridLayout(2, 1));
 		cmdPanel.add(addStudentToClassroom);
@@ -192,28 +203,28 @@ public class StudentPanel extends JPanel {
 
 		classStudentListModel = new DefaultListModel<String>();
 		if (classStudents != null) {
-			for(Student student : classStudents) {
+			for (Student student : classStudents) {
 				classStudentListModel.addElement(student.getName());
 			}
 		}
 		classStudentList = new JList<String>(classStudentListModel);
-		
+
 		addStudentToClassroom.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int classIndex = classroomList.getSelectedIndex();
-				if (classIndex < 0 ) {
+				if (classIndex < 0) {
 					return;
 				}
-				
+
 				Classroom classroom = allClassrooms.get(classIndex);
-				
+
 				int studentIndex = studentList.getSelectedIndex();
-				if (studentIndex < 0 ) {
+				if (studentIndex < 0) {
 					return;
 				}
 				Student student = allStudents.get(studentIndex);
-				
+
 				if (sqlManager.addStudentToClassroom(student.getID(), classroom.getId())) {
 					classStudents.add(student);
 					classStudentListModel.addElement(student.getName());
@@ -226,14 +237,14 @@ public class StudentPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int classIndex = classroomList.getSelectedIndex();
-				if (classIndex < 0 ) {
+				if (classIndex < 0) {
 					return;
 				}
-				
+
 				Classroom classroom = allClassrooms.get(classIndex);
 
 				int classStudentIndex = classStudentList.getSelectedIndex();
-				if (classStudentIndex < 0 ) {
+				if (classStudentIndex < 0) {
 					return;
 				}
 				Student student = classStudents.get(classStudentIndex);
@@ -245,12 +256,11 @@ public class StudentPanel extends JPanel {
 			}
 		});
 
-
 		classStudentList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		classStudentList.setLayoutOrientation(JList.VERTICAL);
 		classStudentList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(classStudentList);
-		listScroller.setBorder(BorderFactory.createTitledBorder ("Students in Classroom (left)"));
+		listScroller.setBorder(BorderFactory.createTitledBorder("Students in Classroom (left)"));
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -268,11 +278,13 @@ public class StudentPanel extends JPanel {
 
 		add(cmdPanel, gbc);
 	}
-/**
- * this method adds Students, edits them, or removes them
- */
-	void addStudents() {
-		
+
+	/**
+	 * This method modifies Students in a class based on what buttons are pressed
+	 * and add a new student, edit a selected, or remove a student.
+	 */
+	public void addStudents() {
+
 		allStudents = sqlManager.getAllStudents();
 
 		JPanel cmdPanel = new JPanel();
@@ -283,12 +295,12 @@ public class StudentPanel extends JPanel {
 
 		studentListModel = new DefaultListModel<String>();
 		if (allStudents != null) {
-			for(Student student : allStudents) {
+			for (Student student : allStudents) {
 				studentListModel.addElement(student.getName());
 			}
 		}
 		studentList = new JList<String>(studentListModel);
-		
+
 		addStudentButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -305,7 +317,7 @@ public class StudentPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = studentList.getSelectedIndex();
-				if (i < 0 ) {
+				if (i < 0) {
 					return;
 				}
 				Student student = allStudents.get(i);
@@ -321,7 +333,7 @@ public class StudentPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = studentList.getSelectedIndex();
-				if (i < 0 ) {
+				if (i < 0) {
 					return;
 				}
 				Student student = allStudents.get(i);
@@ -329,14 +341,14 @@ public class StudentPanel extends JPanel {
 					allStudents.remove(i);
 					studentListModel.remove(i);
 				}
-				
+
 				// delete student from all classrooms
-				for(Classroom classroom: allClassrooms) {
+				for (Classroom classroom : allClassrooms) {
 					sqlManager.deleteStudentFromClassroom(student.getID(), classroom.getId());
 				}
 				if (classStudents != null) {
 					// delete student from the GUI list and model
-					for(int k = 0; k < classStudents.size(); ++k) {
+					for (int k = 0; k < classStudents.size(); ++k) {
 						if (classStudents.get(k).getID() == student.getID()) {
 							classStudents.remove(k);
 							classStudentListModel.remove(k);
@@ -351,7 +363,7 @@ public class StudentPanel extends JPanel {
 		studentList.setLayoutOrientation(JList.VERTICAL);
 		studentList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(studentList);
-		listScroller.setBorder(BorderFactory.createTitledBorder ("All Students"));
+		listScroller.setBorder(BorderFactory.createTitledBorder("All Students"));
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -375,12 +387,12 @@ public class StudentPanel extends JPanel {
 		gbc.gridx = 6;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.NORTH;
-		
+
 		JButton helpButton = new JButton("Help");
 		helpButton.setBackground(Color.GREEN);
 		helpButton.setOpaque(true);
 		add(helpButton, gbc);
-		
+
 		helpButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -388,7 +400,13 @@ public class StudentPanel extends JPanel {
 			}
 		});
 	}
-	
+
+	/**
+	 * This method adds a newly inputed student to the system.
+	 * 
+	 * @param student that is too be added
+	 * @return new student
+	 */
 	private Student getStudentInfo(Student student) {
 		JTextField idText = new JTextField();
 		JTextField nameText = new JTextField();
@@ -405,10 +423,9 @@ public class StudentPanel extends JPanel {
 		}
 
 		final JComponent[] inputs = new JComponent[] { new JLabel("ID"), idText, new JLabel("Name"), nameText,
-				new JLabel("Grade"), gradeText};
+				new JLabel("Grade"), gradeText };
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Student Info",
-				  JOptionPane.OK_CANCEL_OPTION);
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Student Info", JOptionPane.OK_CANCEL_OPTION);
 
 		if (result == JOptionPane.OK_OPTION) {
 			try {
@@ -422,14 +439,19 @@ public class StudentPanel extends JPanel {
 
 				return student;
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 
 		return null;
 
 	}
-	
+
+	/**
+	 * This method adds a new classroom based on the user input.
+	 * 
+	 * @param classroom that is too be added
+	 * @return new classroom
+	 */
 	private Classroom getClassroomInfo(Classroom classroom) {
 		JTextField idText = new JTextField();
 		JTextField courseNameText = new JTextField();
@@ -438,17 +460,16 @@ public class StudentPanel extends JPanel {
 		if (classroom != null) {
 			idText.setText(classroom.getId() + "");
 			idText.setEnabled(false);
-			
+
 			courseNameText.setText(classroom.getCourseName());
 			courseNameText.setEnabled(false);
 			teacherNameText.setText(classroom.getTeacherName());
 		}
 
-		final JComponent[] inputs = new JComponent[] { new JLabel("Id"), idText,
-				new JLabel("Course"), courseNameText, new JLabel("Teacher"), teacherNameText };
+		final JComponent[] inputs = new JComponent[] { new JLabel("Id"), idText, new JLabel("Course"), courseNameText,
+				new JLabel("Teacher"), teacherNameText };
 
-		int result = JOptionPane.showConfirmDialog(this, inputs, "Classroom Info",
-				  JOptionPane.OK_CANCEL_OPTION);
+		int result = JOptionPane.showConfirmDialog(this, inputs, "Classroom Info", JOptionPane.OK_CANCEL_OPTION);
 
 		if (result == JOptionPane.OK_OPTION) {
 			try {
@@ -462,15 +483,18 @@ public class StudentPanel extends JPanel {
 
 				return classroom;
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 
 		return null;
 
 	}
-	
-	void showHelp() {
+
+	/**
+	 * This method represents the text shown when the help button is clicked to help
+	 * the user maneuver the StudentPanel.
+	 */
+	private void showHelp() {
 		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
 		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}

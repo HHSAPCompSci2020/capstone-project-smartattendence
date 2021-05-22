@@ -1,32 +1,30 @@
 import java.util.ArrayList;
 
 /**
- * This class represents the classroom and contians an arraylist of students.
- * @author Xinyu zhao
- * @version 3
- *
+ * This class represents the classroom and contains an ArrayList of Students.
+ * 
+ * @author Xinyu Zhao
+ * @version 4
  */
-
 public class Classroom {
 
-	ArrayList<Student> classroom;
+	private ArrayList<Student> classroom;
 	private int id;
 	private String courseName;
 	private String teacherName;
 	
 	/**
-	 * creates a new classroom
-	 * @pre cannot have two students with the same name!!
+	 * This default constructor creates a new empty classroom.
 	 */
 	public Classroom() {
 		classroom = null;
 	}
 
 	/**
-	 * creates a new classroom
-	 * @pre cannot have two students with the same name!!
+	 * This constructor creates a new classroom with the given ID and course name.
+	 * 
 	 * @param courseName the name of the class
-	 * @param id of the student
+	 * @param id the ID/course number of the class
 	 */
 	public Classroom(int id, String courseName) {
 		this.id = id;
@@ -44,47 +42,57 @@ public class Classroom {
 	}
 
 	/**
-	 * This method removes a student from the class
+	 * This method adds a new student to the class.
 	 *
-	 * @param s Takes in a Student object
-	 * @post ArrayList classroom has one less student
+	 * @param s takes in a Student object
+	 * @post ArrayList classroom has a new student
 	 */
 	public void removeStudent(Student s) {
 		classroom.remove(s);
 
 	}
-/**
- * the method called to get the name of the course
- * @return a String of the courseName
- */
+	
+	/**
+	 * The method is called from client classes to get the name of the course.
+	 * 
+	 * @return a string of the courseName
+	 */
 	public String getCourseName() {
 		return courseName;
 	}
 	/**
-	 * sets the courseName to what you want it to be
+	 * 
+	 * This method sets the courseName field to what the user wants it to be.
+	 * 
 	 * @param courseName the course name you want to change
 	 */
 	public void setCouseName(String courseName) {
 		this.courseName = courseName;
 	}
+	
 	/**
-	 * return the name of the course teacher
+	 * This method is called from client classes and returns the name of the course teacher.
+	 * 
 	 * @return a String of the teacherName
 	 */
 	public String getTeacherName() {
 		return teacherName;
 	}
+	
 	/**
-	 * sets the teacherName to what you want it to be
+	 * This method sets the teacherName to what the user wants it to be.
+	 * 
 	 * @param teacherName the course name you want to change
 	 */
 	public void setTeacherName(String teacherName) {
 		this.teacherName = teacherName;
 	}
-/**
- * return the id of the course.
- * @return int id, the id of the course
- */
+	
+	/**
+	 * This method is called from client classes and returns the id of the course.
+	 * 
+	 * @return id the id of the course
+	 */
 	public int getId() {
 		return id;
 	}
