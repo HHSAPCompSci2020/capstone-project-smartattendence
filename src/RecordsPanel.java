@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,6 +19,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -169,8 +171,34 @@ public class RecordsPanel extends JPanel {
 
        gbc.gridx = 2;
        add(listAbsentScroller, gbc);
+       
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		gbc.gridx = 6;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.NORTH;
+		
+		JButton helpButton = new JButton("Help");
+		helpButton.setBackground(Color.GREEN);
+		helpButton.setOpaque(true);
+		add(helpButton, gbc);
+		
+		helpButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showHelp();
+			}
+		});
    }
+
+	void showHelp() {
+		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
+		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
+	}
+
 }
+
 
 class DateLabelFormatter extends AbstractFormatter {
 

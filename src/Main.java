@@ -48,7 +48,6 @@ public class Main
         
         attendancePaneIndex = startIndex++;
         attendancePane = new Attendance(dataDir, sqlManager);
-        attendancePane.setLayout(new GridLayout(1, 1));
         tabbedPane.addTab(" Attendence ", null, attendancePane,
                 "Take attendence");
 

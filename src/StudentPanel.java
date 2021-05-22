@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -19,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.BorderFactory;
 /**
  * This is the class that creates a Student tab on the GUI
  * @author Arya Khokhar
@@ -41,14 +42,12 @@ public class StudentPanel extends JPanel {
 	DefaultListModel<String> classroomListModel;
 	JList<String> classroomList;
 
-	GridBagConstraints constraints = new GridBagConstraints();
-
 	static JButton addStudentButton = new JButton("Add Student");
 	static JButton editStudentButton = new JButton("Edit Student");
 	static JButton deleteStudentButton = new JButton("Delete Student");
 
-	static JButton addStudentToClassroom = new JButton("<--Add--");
-	static JButton removeStudentFromClassroom = new JButton("--Remove-->");
+	static JButton addStudentToClassroom = new JButton("Add to Classroom");
+	static JButton removeStudentFromClassroom = new JButton("Remove from Classroom");
 
 	static JButton addClassroomButton = new JButton("Add Classroom");
 	static JButton editClassroomButton = new JButton("Edit Classroom");
@@ -165,7 +164,6 @@ public class StudentPanel extends JPanel {
 		classroomList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(classroomList);
 		listScroller.setBorder(BorderFactory.createTitledBorder ("Classrooms"));
-
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -253,7 +251,6 @@ public class StudentPanel extends JPanel {
 		classStudentList.setVisibleRowCount(-1);
 		JScrollPane listScroller = new JScrollPane(classStudentList);
 		listScroller.setBorder(BorderFactory.createTitledBorder ("Students in Classroom (left)"));
-
 		listScroller.setPreferredSize(new Dimension(200, 200));
 
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -371,6 +368,25 @@ public class StudentPanel extends JPanel {
 		gbc.gridy = 0;
 
 		add(cmdPanel, gbc);
+
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		gbc.gridx = 6;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.NORTH;
+		
+		JButton helpButton = new JButton("Help");
+		helpButton.setBackground(Color.GREEN);
+		helpButton.setOpaque(true);
+		add(helpButton, gbc);
+		
+		helpButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showHelp();
+			}
+		});
 	}
 	
 	private Student getStudentInfo(Student student) {
@@ -452,6 +468,11 @@ public class StudentPanel extends JPanel {
 
 		return null;
 
+	}
+	
+	void showHelp() {
+		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
+		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 
 }

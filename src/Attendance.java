@@ -1,5 +1,6 @@
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -47,9 +48,10 @@ import org.bytedeco.opencv.global.opencv_imgcodecs;
 import static org.bytedeco.opencv.global.opencv_core.*;
 
 /**
- * This class is responsible for recognizing faces.
+ * This class is responsible for the attendance panel and respective GUI. It is
+ * also responsible for recognizing faces and taking attendance.
  * @author Arya Khokhar
- * @version 4
+ * @version 5
  */
 public class Attendance extends WebCam {
 
@@ -102,11 +104,18 @@ public class Attendance extends WebCam {
 		System.out.println("nameMapDataFile=" + nameMapDataFile);
 		System.out.println("trainingDataFile=" + trainingDataFile);
 
-		setLayout(new BorderLayout());
-		vidpanel = new JLabel();
+		setLayout(new GridBagLayout());
+        vidpanel = new JLabel("    Pleae wait while video is loading...");
 		vidpanel.setPreferredSize(new Dimension(600, 300));
 
-		add(vidpanel, BorderLayout.LINE_START);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		add(vidpanel, gbc);
 
 		JPanel cmdPanel = new JPanel();
 		cmdPanel.setLayout(new GridLayout(3, 2));
@@ -220,16 +229,36 @@ public class Attendance extends WebCam {
 		rightPanel.add(cmdPanel, c);
 
 		c.gridy = 1;
-		//c.ipady = 400;
-		//c.ipadx = 200;
 		rightPanel.add(listPresentScroller, c);
 
 		c.gridy = 2;
-		//c.ipady = 400;
-		//c.ipadx = 200;
 		rightPanel.add(listAbsentScroller, c);
 
-		add(rightPanel, BorderLayout.LINE_END);
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weighty = 1.0;
+		gbc.weightx = 1.0;
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		add(rightPanel, gbc);
+
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0;
+		c.weighty = 0;
+		c.gridx = 1;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.NORTH;
+		
+		JButton helpButton = new JButton("Help");
+		helpButton.setBackground(Color.GREEN);
+		helpButton.setOpaque(true);
+		rightPanel.add(helpButton, c);
+		
+		helpButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showHelp();
+			}
+		});
 	}
 
 	/**
@@ -285,7 +314,7 @@ public class Attendance extends WebCam {
 		super.startCapture();
 	}
 	
-	public void updateStudentAndClasses() {
+	void updateStudentAndClasses() {
 		allClasses = sqlManager.getAllClassrooms();
 		if (classroomIndex == -1 && allClasses != null && allClasses.size() > 0) {
 			classroomIndex = 0;
@@ -557,7 +586,17 @@ public class Attendance extends WebCam {
 	}
 	
 	void showHelp() {
-		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
+		String msg = "<html><h1>Attendence Panel</h1>Before you take the attendence, please make sure that "
+			+   " at least two students have taken their pictures in <b>Photoshoot Panel</b>. A "
+			+   "student can not be recognized if his/her picture is not available. <h2>Steps to take attendence are:</h2><ul>"
+			+	"<li>Select the classroom in ComboBox.</li>"
+			+	"<li>Make sure that <b>Absent Student</b> list shows all students in the classroom.</li>"
+			+	"<li>Start the attendence by click <b>Start</b> button.</li>"
+			+	"<li>During attendence, make sure that recognized students are moved to <b>Present Students</b> list.</li>"
+			+	"<li>Once the attendence is over, click <b>Stop</b> to stop the attendence.</li>"
+			+	"<li>Save the attendence for the day by click the <b>Save</b> button.</li>"
+			+	"<li>You can also reset the attendence by click <b>Reset</b> button.</li>"
+			+ "</ul><body></body></html>";
 		JOptionPane.showMessageDialog(null, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 
