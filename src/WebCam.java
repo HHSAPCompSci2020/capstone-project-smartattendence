@@ -69,7 +69,7 @@ public class WebCam extends JPanel {
 						}
 
 						if (vidpanel != null) {
-							Image scaledImage = Mat2BufferedImage(frame).getScaledInstance(vidpanel.getWidth(), -1,
+							Image scaledImage = Mat2BufferedImage(frame).getScaledInstance(600, -1,
 									Image.SCALE_FAST);
 
 							vidpanel.setIcon(new ImageIcon(scaledImage));

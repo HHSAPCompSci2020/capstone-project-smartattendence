@@ -203,8 +203,8 @@ public class RecordsPanel extends JPanel {
 				+ "1) Select a class in the dropdown bar<br>"
 				+ "2) Click on the three dots next to the date and select a date from the date picker.<br>"
 				+ "3) Once both fields are filled, click show attendance.<br>"
-				+ "4) Present students will show up on the left under ¡®present¡¯ and absent students<br>"
-				+ "on the right under ¡®absent¡¯.<br>" + "</body></html>";
+				+ "4) Present students will show up on the left under 'present' and absent students<br>"
+				+ "on the right under 'absent'.<br>" + "</body></html>";
 		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 
 	}

@@ -506,7 +506,7 @@ public class StudentPanel extends JPanel {
 				+ "Then press the remove from classroom button. <br>" + "<h4>To add/edit/remove a classroom:</h4>"
 				+ "1) To add a classroom, click on the add classroom button, fill out the respective fields and click ok.<br>"
 				+ "2) To edit a classroom, select a class in the leftmost column, then click on edit. You can only change <br>"
-				+ "the teacher¡¯s name. When done, press ok.<br>"
+				+ "the teacher's name. When done, press ok.<br>"
 				+ "3) To remove a classroom, select a class in the leftmost column then click on delete.<br>"
 				+ "<h4>To add/edit/remove a student:</h4>"
 				+ "1) To add a student, click on the add student button, fill out the respective fields and click ok.<br>"

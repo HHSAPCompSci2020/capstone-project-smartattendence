@@ -262,7 +262,7 @@ public class PhotoShoot extends WebCam {
 				+ "of them at once.<br>" + 
 				"<h4>In order to add photos to an existing student or new student into the database:</h4>" + 
 				"1) Bring the student(s) into the camera view and click on take picture.<br>" + 
-				"2) Once the picture is taken, you can assign a student¡¯s name under their<br> "
+				"2) Once the picture is taken, you can assign a student's name under their<br> "
 				+ "   photo by typing it out and selecting it.<br>" + 
 				"3) Once the pictures you want to save have a name, you can push save and only<br>"
 				+ "   those will be saved.<br>"

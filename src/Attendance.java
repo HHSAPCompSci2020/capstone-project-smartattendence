@@ -478,7 +478,6 @@ public class Attendance extends WebCam {
 
 		if (efrName != null && efrName.contentEquals(ffrName) && efrName.equals(lfrName)) {
 			if (conf1 < 5000 && conf2 < 400 && conf3 < 100) {
-				System.out.println("Found: " + efrName + ", " + conf1 + ", " + conf2 + "," + conf3 + "    " + count++);
 				return nameMap.get(outLabel[0]);
 			}
 		}
