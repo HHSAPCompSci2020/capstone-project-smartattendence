@@ -495,6 +495,27 @@ public class StudentPanel extends JPanel {
 	 * the user maneuver the StudentPanel.
 	 */
 	private void showHelp() {
+		String msg = "<html><body><h2>Student Panel:</h2>"
+				+ "1) The leftmost column displays all of the classrooms.<br>"
+				+ "2) The rightmost column displays all of the students.<br>"
+				+ "3) When you select a classroom, all of the students within that class appear in the middle column.<br>"
+				+ "<h4>To add/remove a student from a class:</h4>"
+				+ "1) To add a student, select the class in the left column and on the student in the right column.<br> "
+				+ "Then press the add to classroom button.<br>"
+				+ "2) To remove a student, select the class in the left column and a student in the middle column.<br>"
+				+ "Then press the remove from classroom button. <br>" + "<h4>To add/edit/remove a classroom:</h4>"
+				+ "1) To add a classroom, click on the add classroom button, fill out the respective fields and click ok.<br>"
+				+ "2) To edit a classroom, select a class in the leftmost column, then click on edit. You can only change <br>"
+				+ "the teacher¡¯s name. When done, press ok.<br>"
+				+ "3) To remove a classroom, select a class in the leftmost column then click on delete.<br>"
+				+ "<h4>To add/edit/remove a student:</h4>"
+				+ "1) To add a student, click on the add student button, fill out the respective fields and click ok.<br>"
+				+ "2) To edit a student, select a student in the rightmost column, then click on edit. You can only change<br> "
+				+ "their grade level. When done, press ok.<br>"
+				+ "3) To remove a student, select a student in the rightmost column then click on delete.<br>"
+				+ "</body></html>";
+		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
+
 	}
 
 }

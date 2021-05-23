@@ -606,5 +606,20 @@ public class Attendance extends WebCam {
 	 * users understand how to take attendance.
 	 */
 	private void showHelp() {
+		String msg = "<html><body><h2>Attendance Panel:</h2>" + 
+				"Before you take attendance, at least two students must have saved images<br>"
+				+ "in the database through the PhotoShoot Panel. If you are running the jar,<br>"
+				+ "there are already students saved. A student can not be recognized if their<br>"
+				+ "photo is not saved.<br>" 
+				+ "<h4>How to take attendance:</h4>"
+				+ "1) Select a class from the dropdown bar. Everyone starts off absent by default.<br>" 
+				+ "2) Once you are ready to take attendance, click the start button.<br>" + 
+				"3) As students walk past, the program will mark them as present.<br>" + 
+				"4) To stop attendance at any time, click on the stop button.<br>" + 
+				"5) To save the attendance, click on the save button.<br>" + 
+				"6) To reset attendance or take it again, click the reset button. <br>"
+				+ "</body></html>";
+		JOptionPane.showMessageDialog(null, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
+
 	}
 }

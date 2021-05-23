@@ -198,11 +198,20 @@ public class RecordsPanel extends JPanel {
 	 * clicked to assist the user in using the tab.
 	 */
 	private void showHelp() {
+		String msg = "<html><body><h2>Records Panel:</h2>"
+				+ "<h4>To show the attendance for a select class on a particular date:</h4>"
+				+ "1) Select a class in the dropdown bar<br>"
+				+ "2) Click on the three dots next to the date and select a date from the date picker.<br>"
+				+ "3) Once both fields are filled, click show attendance.<br>"
+				+ "4) Present students will show up on the left under ¡®present¡¯ and absent students<br>"
+				+ "on the right under ¡®absent¡¯.<br>" + "</body></html>";
+		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
+
 	}
 }
 
 /**
- * This class formats the date for the calendar. 
+ * This class formats the date for the calendar.
  * 
  * @author Xinyu Zhao
  */
@@ -222,4 +231,5 @@ class DateLabelFormatter extends AbstractFormatter {
 
 		return "";
 	}
+
 }
