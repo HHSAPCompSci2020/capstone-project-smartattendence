@@ -257,8 +257,5 @@ public class PhotoShoot extends WebCam {
 	 * on the help button and walks them through how to use the panel.
 	 */
 	private void showHelp() {
-		String msg = "<html><body><h1>PhotoShoot Panel</h1>Take pictures and tag them with a student name."
-				+ "<h2>Steps to take pictures are: </h2><ul>" + "<li></li>" + "</ul></body></html>";
-		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 }

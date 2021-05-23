@@ -198,8 +198,6 @@ public class RecordsPanel extends JPanel {
 	 * clicked to assist the user in using the tab.
 	 */
 	private void showHelp() {
-		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
-		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 }
 

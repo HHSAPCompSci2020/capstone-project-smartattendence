@@ -3,21 +3,30 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * This class is the main class and creates the window.
  * 
  * @author Arya Khokhar and Xinyu Zhao
- * @version 5
+ * @version 6
  */
 public class Main {
 	private static SQLiteManager sqlManager;
@@ -97,7 +106,7 @@ public class Main {
 	 * 
 	 * @return path to directory
 	 */
-	protected static String createDataDirectory() {
+	private static String createDataDirectory() {
 		String basePath = System.getProperty("user.dir");
 		File dataDirFile = new File(basePath + File.separator + "resources");
 		dataDir = dataDirFile.getPath();
@@ -110,6 +119,7 @@ public class Main {
 			String classifierPath1 = classifierDir.getAbsolutePath() + File.separator
 					+ "haarcascade_frontalface_alt.xml";
 			saveResource("haarcascade_frontalface_alt.xml", classifierPath1);
+			saveResource("data.jar", dataDir);
 
 			File faceDir = new File(dataDirFile + File.separator + "faces");
 			if (!faceDir.exists()) {
@@ -124,14 +134,34 @@ public class Main {
 	 * This method saves the path to the data folder.
 	 * 
 	 * @param resourcePath is the path to the resource folder
-	 * @param savePath     is used to replace the the new location
+	 * @param savePath     is used to replace the new location
 	 */
-	protected static void saveResource(String resourcePath, String savePath) {
+	private static void saveResource(String resourcePath, String savePath) {
 		Main m = new Main();
 		ClassLoader classLoader = m.getClass().getClassLoader();
 		InputStream inputStream = classLoader.getResourceAsStream(resourcePath);
+		if (resourcePath.endsWith(".jar")) {
+			try {
+				JarInputStream jarStream = new JarInputStream(inputStream);
+				JarEntry entry;
+				while ((entry = jarStream.getNextJarEntry()) != null) {
+					File newFile = new File(savePath, entry.getName());
+					if (entry.isDirectory()) {
+						newFile.mkdirs();
+						continue;
+					}
+					newFile.getParentFile().mkdirs();
+					try (OutputStream fos = new FileOutputStream(newFile)) {
+						IOUtils.copy(jarStream, fos);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 		File saveFile = new File(savePath);
-		try {
+	    try {
 			Files.copy(inputStream, saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();

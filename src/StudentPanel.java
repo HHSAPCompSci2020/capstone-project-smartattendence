@@ -495,8 +495,6 @@ public class StudentPanel extends JPanel {
 	 * the user maneuver the StudentPanel.
 	 */
 	private void showHelp() {
-		String msg = "<HTML><BODY>Help Message</BODY></HTML>";
-		JOptionPane.showMessageDialog(this, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 
 }

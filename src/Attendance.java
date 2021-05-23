@@ -606,17 +606,5 @@ public class Attendance extends WebCam {
 	 * users understand how to take attendance.
 	 */
 	private void showHelp() {
-		String msg = "<html><h1>Attendence Panel</h1>Before you take the attendence, please make sure that "
-				+ " at least two students have taken their pictures in <b>Photoshoot Panel</b>. A "
-				+ "student can not be recognized if his/her picture is not available. <h2>Steps to take attendence are:</h2><ul>"
-				+ "<li>Select the classroom in ComboBox.</li>"
-				+ "<li>Make sure that <b>Absent Student</b> list shows all students in the classroom.</li>"
-				+ "<li>Start the attendence by click <b>Start</b> button.</li>"
-				+ "<li>During attendence, make sure that recognized students are moved to <b>Present Students</b> list.</li>"
-				+ "<li>Once the attendence is over, click <b>Stop</b> to stop the attendence.</li>"
-				+ "<li>Save the attendence for the day by click the <b>Save</b> button.</li>"
-				+ "<li>You can also reset the attendence by click <b>Reset</b> button.</li>"
-				+ "</ul><body></body></html>";
-		JOptionPane.showMessageDialog(null, msg, "Attendence Help", JOptionPane.PLAIN_MESSAGE);
 	}
 }
