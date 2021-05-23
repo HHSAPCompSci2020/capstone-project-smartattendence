@@ -1,5 +1,2 @@
 /bin
-/resources/faces
-/resources/sqlite.db
 /target/
-/sqlite.db

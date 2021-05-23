@@ -72,7 +72,7 @@ public class PhotoShoot extends WebCam {
 		this.sqlManager = sqlManager;
 
 		setLayout(new GridBagLayout());
-		vidpanel = new JLabel("     Pleae wait while video is loading...");
+		vidpanel = new JLabel("     Please wait while video is loading...");
 		vidpanel.setPreferredSize(new Dimension(600, 300));
 
 		GridBagConstraints gbc = new GridBagConstraints();
